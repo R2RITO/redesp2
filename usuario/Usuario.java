@@ -1,3 +1,5 @@
+package Usuariospackage Usuarios
+
 public class Usuario {
 
     private String usuario;
