@@ -1,10 +1,10 @@
-public class AutenticacionImpl
+public class CalculatorImpl
     extends 
       java.rmi.server.UnicastRemoteObject
     implements Autenticacion {
 
     public static final long serialVersionUID = 1L;
-    private ArrayList usuarios;
+    private ArrayList<String> usuarios;
 
     public AutenticacionImpl(ArrayList usuarios)
         throws java.rmi.RemoteException {
