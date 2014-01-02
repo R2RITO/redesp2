@@ -1,0 +1,4 @@
+Samantha:clave1
+Fernando:clave2
+MamaDeSamantha:clave3
+Arturo:claveSegura

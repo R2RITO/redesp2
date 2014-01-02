@@ -12,7 +12,9 @@ public class Usuario {
 
     }
 
-    public Boolean equals(Usuario usr) {
+    public boolean equals(Object o) {
+
+        Usuario usr = (Usuario) o;
 
         String usuarioExterno = usr.getUsuario();
         String claveExterna = usr.getClave();
