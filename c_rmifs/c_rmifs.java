@@ -188,7 +188,7 @@ public class c_rmifs {
         }
 
         System.out.println("ME AUTENTIQUE WOOO");
-
+        //Una vez autenticado, proceder a ejecutar los comandos del archivo
 
     }
 }
