@@ -41,11 +41,11 @@ public class a_rmifs {
         ArrayList<String> listaFlags = new ArrayList<String>();
         listaFlags.add("-p");
         listaFlags.add("-f");
-        String archivo = "0";
+        String archivo = null;
 
         //Verificacion de argumentos
 
-        if (args.length < 4) {
+        if ((puerto == -1) || (archivo == null)) {
             System.out.println("Error, especifique el puerto y el archivo");
             System.exit(EXIT_FAILURE);
         }
