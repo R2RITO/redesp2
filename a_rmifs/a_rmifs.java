@@ -1,23 +1,20 @@
-package autenticacion;
-
 import java.rmi.Naming;
 import java.rmi.registry.LocateRegistry;
-import usuario.*;
 import java.util.*;
 import java.io.*;
 
-public class AutenticacionServer {
+public class a_rmifs {
 
     //Constantes
     private static final int EXIT_FAILURE = -1;
 
 
-    public AutenticacionServer(ArrayList<Usuario> usuarios, int puertoEspecifico) {
+    public a_rmifs(ArrayList<Usuario> usuarios, int puertoEspecifico) {
 
         try {
             String puerto = Integer.toString(puertoEspecifico);
             LocateRegistry.createRegistry(21000);            
-            Autenticacion auth = new AutenticacionImpl(usuarios);
+            a_rmifs_Interface auth = (a_rmifs_Interface) new a_rmifs_Implementation(usuarios);
             Naming.rebind("rmi://127.0.0.1:"+puerto+"/ServidorAutenticacion", auth);
         } catch (Exception e) {
             System.out.println("Trouble: " + e);
@@ -105,7 +102,7 @@ public class AutenticacionServer {
 
 
         //Correr el servidor
-        new AutenticacionServer(usuarios,puerto);
+        new a_rmifs(usuarios,puerto);
     }
 
 }

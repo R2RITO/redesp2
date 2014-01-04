@@ -1,17 +1,14 @@
-package autenticacion;
-
-import usuario.*;
 import java.util.*;
 
-public class AutenticacionImpl
+public class a_rmifs_Implementation
     extends 
       java.rmi.server.UnicastRemoteObject
-    implements Autenticacion {
+    implements a_rmifs_Interface {
 
     public static final long serialVersionUID = 1L;
     private ArrayList<Usuario> usuarios;
 
-    public AutenticacionImpl(ArrayList<Usuario> usuarios) throws java.rmi.RemoteException {
+    public a_rmifs_Implementation(ArrayList<Usuario> usuarios) throws java.rmi.RemoteException {
         super();
 	    this.usuarios = usuarios;
     }
