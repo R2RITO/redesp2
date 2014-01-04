@@ -160,20 +160,7 @@ public class s_rmifs {
             }
         }
 
-        for (int i=0; i<sFiles.size(); i++) {
-
-            System.out.println(sFiles.get(i).toString());
-
-        }
-
-        System.out.println(sFiles.toString());
-
-        s_rmifs_listen cosa = new s_rmifs_listen();
-
         //Correr el servidor
         new s_rmifs(sFiles, 21000);
-
-
     }
-
 }

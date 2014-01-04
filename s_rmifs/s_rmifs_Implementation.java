@@ -1,9 +1,7 @@
 import java.util.*;
-import java.io.File;
-import java.util.Scanner;
-import java.io.PrintWriter;
-import java.io.InputStream;
-
+import java.io.*;
+import java.rmi.*;
+import java.rmi.server.UnicastRemoteObject;
 
 public class s_rmifs_Implementation extends java.rmi.server.UnicastRemoteObject
     implements s_rmifs_Interface {
@@ -28,45 +26,46 @@ public class s_rmifs_Implementation extends java.rmi.server.UnicastRemoteObject
         return result;
     }
 
-    public String sub(String user, String password, String filename, InputStream data) throws java.rmi.RemoteException {
+    public String sub(String user, String password, String filename, byte[] data) throws java.rmi.RemoteException {
 
-        /*try {
-            
-            int i;
-            char c;
+        // Falta verificar el archivo si hay permisos o no
 
-            while((i=data.read())!=-1) {
-                // converts integer to character
-                c=(char)i;
-            
-                // prints character
-                System.out.print(c);
-            }
-
-            /*File newFile = new File(file.getName());
-            newFile.createNewFile();
-        
-            Scanner scanner = new Scanner(file);
-            String line;
-            PrintWriter writer = new PrintWriter(filename, "UTF-8");
-            
-            while (scanner.hasNextLine()) {
-                line = scanner.nextLine();
-                System.out.println("ENTRE EN EL WHILE: "+line);
-                writer.println(line);
-            }    
-        
-            writer.close();
-
+        try {
+            FileOutputStream out = new FileOutputStream(filename);        
+            out.write(data);
+            out.close();
         } catch (Exception e) {
-            System.out.println("- Error - Problema al subir un archivo");
-        }*/
+            return "- ALERT - Error al subir el archivo.";
+        }
+
         return "- ALERT - Archivo "+filename+" subido con exito.";
     }
 
-    public String baj(String user, String password, String filename) throws java.rmi.RemoteException {
+    public byte[] baj(String user, String password, String filename) throws java.rmi.RemoteException {
 
-        return "True";
+        int i;
+
+        for (i=0; i<sFiles.size(); i++) {
+            if (sFiles.get(i).equalsFilename(filename)) {
+                break;
+            }
+        }
+
+        if (i == sFiles.size()) {
+            return (null);
+        }
+
+        try {
+            File file = new File(filename);
+            byte buffer[] = new byte[(int)file.length()];
+            BufferedInputStream input = new BufferedInputStream(new FileInputStream(filename));
+            input.read(buffer, 0, buffer.length);
+            input.close();
+            return(buffer);
+        } catch (Exception e) {
+            System.out.println("- Error - Problema al ejecutar comando baj");
+            return(null);
+        }
     }
 
     public String bor(String user, String password, String filename) throws java.rmi.RemoteException {
