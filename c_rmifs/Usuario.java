@@ -1,5 +1,3 @@
-package usuario;
-
 public class Usuario {
 
     private String usuario;
