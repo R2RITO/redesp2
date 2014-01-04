@@ -144,9 +144,7 @@ public class c_rmifs {
         
         try {
             
-            Autenticacion auth = (Autenticacion) Naming.lookup("rmi://127.0.0.1:"+puerto+"/ServidorAutenticacion");
-        
-            
+            a_rmifs_Interface auth = (a_rmifs_Interface) Naming.lookup("rmi://127.0.0.1:"+puerto+"/ServidorAutenticacion");            
             
             for (Usuario usuActual : usuarios) {
 
