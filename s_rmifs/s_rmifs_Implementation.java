@@ -3,21 +3,53 @@ import java.io.*;
 import java.rmi.*;
 import java.rmi.server.UnicastRemoteObject;
 
-public class s_rmifs_Implementation extends java.rmi.server.UnicastRemoteObject
-    implements s_rmifs_Interface {
 
-    public static final long serialVersionUID = 1L; // Que es esto?
+/*
+ * Aqui se contienen las implementaciones de los metodos
+ * especificados en la interfaz s_rmifs_Interface. Estos
+ * representan las funciones del servidor de archivo.
+ *
+ * @author Arturo Voltattorni
+ * @author Fernando Dagostino
+ */
+public class      s_rmifs_Implementation 
+       extends    java.rmi.server.UnicastRemoteObject
+       implements s_rmifs_Interface                   {
+
+
+    public static final long serialVersionUID = 1L;
+
+    /* Lista de archivos manejados por el servidor de archivos
+     * Con esta lista se realizaran todas las verificaciones
+     * dinamicas y se manejara el archivo de registro.
+     */
     private ArrayList<Archivo> sFiles;
 
+
+    /*
+     * Constructor para la clase s_rmifs_Implementation
+     * @param sFiles La lista de archivos que posee el servidor de archivos
+     */
     public s_rmifs_Implementation(ArrayList<Archivo> sFiles) 
     throws java.rmi.RemoteException
     {
+        // Inicializamos el objeto remoto
         super();
+        // Asignamos la lista de archivos al objeto
         this.sFiles = sFiles;
     }
 
 
-    public String rls(String user, String password) throws java.rmi.RemoteException {
+
+    /*
+     * Funcion que lista todos los archivos contenidos en el servidor
+     * de archivos. Es decir, lista los archivos remotos.
+     * @param user Es el ID del usuario
+     * @param password Es la clave del usuario user
+     * @return Un string con la lista de archivos remotos
+     */
+    public String rls(String user, String password) 
+    throws java.rmi.RemoteException {
 
         String result = "";
         for (int i=0; i<sFiles.size(); i++) {
@@ -26,21 +58,46 @@ public class s_rmifs_Implementation extends java.rmi.server.UnicastRemoteObject
         return result;
     }
 
-    public String sub(String user, String password, String filename, byte[] data) throws java.rmi.RemoteException {
 
-        // Falta verificar el archivo si hay permisos o no
+    /*
+     * Funcion que sube un archivo al servidor de archivos.
+     * @param user Es el ID del usuario
+     * @param password Es la clave del usuario user
+     * @param filename Es el nombre con el cual se va a guardar el archivo
+     * @param data Es el contenido del archivo que se va a subir
+     * @return Un string con un mensaje de exito o fracaso.
+     */
+    public String sub(String user, String password, String filename, byte[] data) 
+    throws java.rmi.RemoteException {
+
+        for (int i=0; i<sFiles.size(); i++) {
+            if (sFiles.get(i).equalsFilename(filename)) {
+                return "- ALERT - El archivo especificado ya existe. \n"+
+                       "Intente cambiando el nombre del archivo o "+
+                       "borrando el que ya existe con el comando bor.";
+            }
+        }
 
         try {
             FileOutputStream out = new FileOutputStream(filename);        
             out.write(data);
             out.close();
         } catch (Exception e) {
-            return "- ALERT - Error al subir el archivo.";
+            return "- ALERT - Ocurrio un error al subir el archivo.";
         }
 
         return "- ALERT - Archivo "+filename+" subido con exito.";
     }
 
+
+    /*
+     * Funcion que baja un archivo del servidor de archivos.
+     * @param user Es el ID del usuario
+     * @param password Es la clave del usuario user
+     * @param filename Es el nombre del archivo que se desea bajar
+     * @return Un arreglo de bytes con el contenido del archivo.
+     * Si ocurre un error, retorna null.
+     */
     public byte[] baj(String user, String password, String filename) throws java.rmi.RemoteException {
 
         int i;
@@ -68,6 +125,14 @@ public class s_rmifs_Implementation extends java.rmi.server.UnicastRemoteObject
         }
     }
 
+
+    /*
+     * Funcion que borra un archivo del servidor de archivos.
+     * @param user Es el ID del usuario
+     * @param password Es la clave del usuario user
+     * @param filename Es el nombre del archivo que se desea borrar
+     * @return Un string con un mensaje de exito o fracaso.
+     */
     public String bor(String user, String password, String filename) throws java.rmi.RemoteException {
 
         Archivo file = new Archivo(filename, user);
@@ -84,6 +149,11 @@ public class s_rmifs_Implementation extends java.rmi.server.UnicastRemoteObject
         }        
     }
 
+    /*
+     * Funcion que avisa que un usuario dejo de usar el servidor
+     * @param user Es el ID del usuario
+     * @param password Es la clave del usuario user
+     */
     public void sal(String user, String password) throws java.rmi.RemoteException {
 
     }

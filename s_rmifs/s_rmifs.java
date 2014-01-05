@@ -3,17 +3,33 @@ import java.rmi.registry.LocateRegistry;
 import java.util.*;
 import java.io.*;
 
+/*
+ * Este es el servidor de archivos. Aqui se realizan
+ * las lecturas de archivos y verificaciones pertinentes
+ * Asimismo, aqui es donde se inicia el servidor.
+ *
+ * @author Arturo Voltattorni
+ * @author Fernando Dagostino
+ */
 public class s_rmifs {
 
 
-    // Declaracion de constantes
+    /* DECLARACION DE CONSTANTES */
+
+    // Codigo de salida en caso de fallos
     private static int EXIT_FAILURE = -1;
+    
+    // Nombre del archivo que contiene archivos y propietarios
     private static String cwfName   = "registroArchivos.txt";
+
+    // Ruta donde va a ejecutarse el servidor
     private static String cwdPath   = ".";
+
+    // Lista de archivos disponibles en el servidor de archivos
     private static ArrayList<Archivo> sFiles = new ArrayList<Archivo>();
 
 
-    // Clases para la creacion de hilos
+    /* CLASES PARA LOS HILOS */
 
     public static class s_rmifs_listen extends Thread {
 
@@ -33,8 +49,17 @@ public class s_rmifs {
     }
 
 
-    // Metodos para el Main del servidor de archivos
+    /* METODOS PARA EL MAIN DEL SERVIDOR DE ARCHIVOS */
     
+
+    /*
+     * Constructor para el servidor de archivos
+     * @param sFiles Es la lista de archivos disponibles en el servidor.
+     * En este punto, esta lista ya se encuentra verificada y contiene
+     * un snapshot del ultimo estado del servidor de archivos.
+     * @param puertoEspecifico Es el puerto por donde se asociara
+     * al objeto remoto.
+     */
     public s_rmifs(ArrayList<Archivo> sFiles, int puertoEspecifico) {
 
         try {
@@ -47,6 +72,15 @@ public class s_rmifs {
         }
     }
 
+
+    /*
+     * Procedimiento que lee el archivo de propietarios de archivos
+     * y los coloca en la lista de archivos global 'sFiles'.
+     * Al terminar la ejecucion, sFiles debera contener una lista
+     * de todos los archivos de los usuarios, cada archivo con
+     * su respectivo dueno.
+     * @param file Es el archivo del cual se va a leer.
+     */
     public static void leerArchivo(File file) {
 
         try {
@@ -67,6 +101,18 @@ public class s_rmifs {
 
     }
 
+
+    /*
+     * Procedimiento que agrega los demas archivos que se encuentran
+     * en el directorio en donde se ejecuta el servidor, pero que no
+     * son propiedad de usuario alguno. Es decir, son archivos que
+     * le pertenecen al sistema y que no pueden ser modificados o
+     * eliminados.
+     * Al terminar su ejecucion, la lista sFiles debera ser la misma
+     * lista anterior mas los archivos que corresponden al sistema
+     * que se encuentren en la carpeta donde se ejecuto el servidor.
+     * @param cwd Es el directorio en donde se ejecuto el servidor
+     */
     public static void agregarArchivoSistema(File cwd) {
 
         File[] fileList = cwd.listFiles();
@@ -87,7 +133,7 @@ public class s_rmifs {
 
             // Si el archivo no estaba. Lo agregamos a la lista
             // con el sistema como su dueno. Esto para que otro
-            // usuarios no lo modifiquen sin querer.
+            // usuarios no lo modifiquen o lo borren.
             if (j == sFiles.size()) {
                 sFiles.add(new Archivo(fileList[i].getName(), "SYSTEM"));
             }
@@ -97,6 +143,14 @@ public class s_rmifs {
     }
 
 
+    /*
+     * Procedimiento que verifica que todos los archivos que se
+     * encuentran en la lista realmente estan en el directorio
+     * en donde se ejecuto el servidor. Es decir, verifica que
+     * el contenido del archivo de texto se corresponda con los
+     * archivos en el directorio de ejecucion.
+     * @param cwd Es el archivo que corresponde al directorio de ejecucion
+     */
     public static void verificarArchivosListados(File cwd) {
 
         File[] fileList = cwd.listFiles();
@@ -106,20 +160,19 @@ public class s_rmifs {
             actual = sFiles.get(i).getFilename();
             int j;
             for (j=0; j<fileList.length; j++) {
-
                 if (fileList[j].getName().equals(actual)) {
                     break;
                 }
-
             }
-
             if (j == fileList.length) {
-                System.out.println(" - ERROR - Falta el archivo "+actual+" en el directorio");
+                System.out.println(" - ERROR - Falta el archivo "+
+                                   actual+" en el directorio");
                 System.exit(EXIT_FAILURE);
             }
-
         }
     }
+
+    /* PROGRAMA PRINCIPAL */
 
     public static void main(String args[]) {
 
@@ -160,7 +213,7 @@ public class s_rmifs {
             }
         }
 
-        //Correr el servidor
+        // Se ejecuta entonces el servidor:
         new s_rmifs(sFiles, 21000);
     }
 }
