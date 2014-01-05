@@ -98,7 +98,8 @@ public class      s_rmifs_Implementation
      * @return Un arreglo de bytes con el contenido del archivo.
      * Si ocurre un error, retorna null.
      */
-    public byte[] baj(String user, String password, String filename) throws java.rmi.RemoteException {
+    public byte[] baj(String user, String password, String filename) 
+    throws java.rmi.RemoteException {
 
         int i;
 
@@ -108,6 +109,7 @@ public class      s_rmifs_Implementation
             }
         }
 
+        // Si llegamos al final de la lista, el archivo no existe.
         if (i == sFiles.size()) {
             return (null);
         }
@@ -115,7 +117,8 @@ public class      s_rmifs_Implementation
         try {
             File file = new File(filename);
             byte buffer[] = new byte[(int)file.length()];
-            BufferedInputStream input = new BufferedInputStream(new FileInputStream(filename));
+            BufferedInputStream input = 
+                new BufferedInputStream(new FileInputStream(filename));
             input.read(buffer, 0, buffer.length);
             input.close();
             return(buffer);
@@ -133,7 +136,8 @@ public class      s_rmifs_Implementation
      * @param filename Es el nombre del archivo que se desea borrar
      * @return Un string con un mensaje de exito o fracaso.
      */
-    public String bor(String user, String password, String filename) throws java.rmi.RemoteException {
+    public String bor(String user, String password, String filename) 
+    throws java.rmi.RemoteException {
 
         Archivo file = new Archivo(filename, user);
 
@@ -142,10 +146,12 @@ public class      s_rmifs_Implementation
             sFiles.remove(file);
             File fileToErase = new File(filename);
             fileToErase.delete();
-            return "- ALERT - El archivo "+filename+" se ha eliminado con exito.";
+            return "- ALERT - El archivo "+filename+
+                   " se ha eliminado con exito.";
         
         } else {
-            return "- ALERT - El archivo especificado no existe o no tiene permisos para borrarlo";
+            return "- ALERT - El archivo especificado no existe o no"+
+                   " tiene permisos para borrarlo";
         }        
     }
 
@@ -154,7 +160,8 @@ public class      s_rmifs_Implementation
      * @param user Es el ID del usuario
      * @param password Es la clave del usuario user
      */
-    public void sal(String user, String password) throws java.rmi.RemoteException {
+    public void sal(String user, String password) 
+    throws java.rmi.RemoteException {
 
     }
 }

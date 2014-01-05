@@ -28,23 +28,16 @@ public class s_rmifs {
     // Lista de archivos disponibles en el servidor de archivos
     private static ArrayList<Archivo> sFiles = new ArrayList<Archivo>();
 
-
     /* CLASES PARA LOS HILOS */
 
-    public static class s_rmifs_listen extends Thread {
+    public static class s_rmifs_thread extends Thread {
 
-
-
-        public s_rmifs_listen() {
-
-        }       
-
+        public s_rmifs_thread() {
+        }
+       
         @Override
         public void run() {
-
-            while (true) {
-                System.out.println("SOY UNA DIVINA");
-            }        
+            new s_rmifs(sFiles, 21000);     
         }        
     }
 
@@ -176,6 +169,8 @@ public class s_rmifs {
 
     public static void main(String args[]) {
 
+        System.out.println(" - Iniciando Servidor de Archivos - ");
+
         File cwf = new File(cwfName);
         
         // Si el archivo de registro ya existe, debemos hacer verificaciones
@@ -213,7 +208,48 @@ public class s_rmifs {
             }
         }
 
+        s_rmifs_thread servidor = new s_rmifs_thread();
+
         // Se ejecuta entonces el servidor:
-        new s_rmifs(sFiles, 21000);
+        servidor.start();
+
+        boolean servidorActivo = true;
+
+        System.out.println(" - Servidor de Archivos: Listo. - ");
+
+
+        // Se procede a escuchar los comandos del usuario
+        String comando = "";
+
+        BufferedReader stdin = 
+            new BufferedReader(new InputStreamReader(System.in));
+
+        // Mientras el servidor este activo    
+        while (servidorActivo) {
+
+            // Se lee un comando de la entrada estandar
+            try {
+                System.out.print("FileServer> ");
+                comando = stdin.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            // Y se identifica que comando es y que acciones tomar.
+            if (comando.equalsIgnoreCase("log")) {
+
+                System.out.println("- Alerta - Se ejecuto log. Falta implementar");
+
+            } else if (comando.equalsIgnoreCase("sal")) {
+
+                servidorActivo = false;
+                System.exit(1); // ESTO HAY Q CAMBIARLO
+
+            } else {
+
+                System.out.println("- Error - Comando desconocido.");
+
+            }
+        }
     }
 }
