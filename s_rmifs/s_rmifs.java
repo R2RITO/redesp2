@@ -238,7 +238,7 @@ public class s_rmifs {
             // Y se identifica que comando es y que acciones tomar.
             if (comando.equalsIgnoreCase("log")) {
 
-                System.out.println("- Alerta - Se ejecuto log. Falta implementar");
+                System.out.println("Falta Implementar Esta PArte");
 
             } else if (comando.equalsIgnoreCase("sal")) {
 

@@ -26,6 +26,9 @@ public class      s_rmifs_Implementation
     private ArrayList<Archivo> sFiles;
 
 
+    /* Lista que representa al log */
+    private static ArrayList<String> log;
+
     /*
      * Constructor para la clase s_rmifs_Implementation
      * @param sFiles La lista de archivos que posee el servidor de archivos
@@ -40,6 +43,29 @@ public class      s_rmifs_Implementation
     }
 
 
+    /*
+     * Funcion que actualiza el log.
+     * @param user Es el ID del usuario que ejecuto el comando
+     * @param msg Contiene la informacion del comando que ejecuto.
+     */
+    public static void actualizarLog(String user, String msg) {
+
+        if (log.size() < 20) {
+            log.add(user+": "+msg);
+        } else {
+            log.remove(0);
+            log.add(19, user+": "+msg);
+        }
+    }
+
+    /*
+     * Procedimiento que imprime la lista de logs.
+     */
+    public static void imprimirLog() {
+        for (int i=0; i<log.size(); i++) {
+            System.out.println(log.get(i));
+        }
+    }
 
     /*
      * Funcion que lista todos los archivos contenidos en el servidor
@@ -50,6 +76,9 @@ public class      s_rmifs_Implementation
      */
     public String rls(String user, String password) 
     throws java.rmi.RemoteException {
+        
+        //Actualizamos el log.
+        actualizarLog(user, "Ejecuto el comando rls");
 
         String result = "";
         for (int i=0; i<sFiles.size(); i++) {
@@ -69,6 +98,9 @@ public class      s_rmifs_Implementation
      */
     public String sub(String user, String password, String filename, byte[] data) 
     throws java.rmi.RemoteException {
+
+        //Actualizamos el log.
+        actualizarLog(user, "Ejecuto el comando sub");
 
         for (int i=0; i<sFiles.size(); i++) {
             if (sFiles.get(i).equalsFilename(filename)) {
@@ -100,6 +132,9 @@ public class      s_rmifs_Implementation
      */
     public byte[] baj(String user, String password, String filename) 
     throws java.rmi.RemoteException {
+
+        //Actualizamos el log.
+        actualizarLog(user, "Ejecuto el comando baj");
 
         int i;
 
@@ -139,6 +174,10 @@ public class      s_rmifs_Implementation
     public String bor(String user, String password, String filename) 
     throws java.rmi.RemoteException {
 
+        //Actualizamos el log.
+        actualizarLog(user, "Ejecuto el comando bor");
+
+
         Archivo file = new Archivo(filename, user);
 
         if (sFiles.contains(file)) {
@@ -162,6 +201,9 @@ public class      s_rmifs_Implementation
      */
     public void sal(String user, String password) 
     throws java.rmi.RemoteException {
+        
+        //Actualizamos el log.
+        actualizarLog(user, "Ejecuto el comando sal");
 
     }
 }
