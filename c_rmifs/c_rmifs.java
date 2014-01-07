@@ -11,7 +11,14 @@ public class c_rmifs {
     public static String nombreCliente = null;
     public static String claveCliente = null;
 
-    //Metodo "static" porque no requiere de un objeto para utilizarlo
+
+
+    /* Metodo que verifica los argumentos pasados al programa
+     * @param indice Indice del arreglo de argumentos
+     * @param longitud Longitud del arreglo de argumentos
+     * @param args Arreglo de argumentos
+     * @param listaFlags lista con los flags validos
+     */
     private static void verificarArg(int indice, int longitud, String[] args, ArrayList<String> listaFlags) {
 
         if ((indice+1 == longitud) || listaFlags.contains(args[indice+1])) {
@@ -20,6 +27,145 @@ public class c_rmifs {
         }
 
     }
+
+    /* Funcion que lee el archivo de usuarios y
+     * los inserta en una lista
+     * @param archivoUsu el nombre del archivo a leer
+     * @return retorna la lista con los usuarios del archivo
+     */
+    public static ArrayList<Usuario> cargarArchivoUsuarios(String archivoUsu) {
+         
+        
+        File archivoUsuarios = new File(archivoUsu);
+        BufferedReader lector = null;
+        ArrayList<Usuario> usuarios = new ArrayList<Usuario>();
+
+        //Apertura del archivo de usuarios
+
+        try {
+
+           lector = new BufferedReader(new FileReader(archivoUsuarios));
+           String linea = null;
+           String tokens[];
+           Usuario usr;
+
+           while ((linea = lector.readLine()) != null) {
+                    
+               tokens = linea.split(":");
+               usr = new Usuario(tokens[0],tokens[1]);
+               usuarios.add(usr);
+
+           }
+            
+           //Excepciones
+        } catch (FileNotFoundException e) {
+                //e.printStackTrace();
+           System.out.println("Error, archivo no encontrado");
+        } catch (IOException e) {
+           e.printStackTrace();
+        } finally {
+           try {
+               if (lector != null) {
+                   lector.close();
+               }
+           } catch (IOException e) {
+           }
+        }
+
+        return usuarios;
+
+    }
+
+    /* Funcion que solicita al usuario los datos para
+     * autenticarse por pantalla
+     * @return La lista con el usuario insertado por pantalla
+     */
+    public static ArrayList<Usuario> cargarUsuariosPorPantalla() {
+
+        String nombreActual = null;
+        String claveActual = null;
+        ArrayList<Usuario> usuarios = new ArrayList<Usuario>();
+
+
+        try {
+		    BufferedReader lectorEntrada = 
+                new BufferedReader(new InputStreamReader(System.in));
+ 
+            System.out.println("Inserte el nombre de usuario");
+		    nombreActual = lectorEntrada.readLine();
+          
+            System.out.println("Inserte la clave");
+            claveActual = lectorEntrada.readLine();
+               
+            Usuario uActual = new Usuario(nombreActual,claveActual);
+            usuarios.add(uActual);   
+ 
+	    } catch (IOException io) {
+            System.out.println("Error en la lectura de datos de usuario");
+		    io.printStackTrace();
+	    }
+
+        return usuarios;
+
+    }
+    
+
+    /* Funcion que utiliza el servidor de autenticacion
+    *  para autenticar a los usuarios provistos
+    *  @param usuarios Lista con los usuarios a autenticar
+    *  @param puerto El puerto para conectarse al servidor de autenticacion
+    *  @return Booleano que indica si se pudo autenticar.
+    */
+
+    public static boolean autenticarCliente(ArrayList<Usuario> usuarios, int puerto) {
+
+        //Acceder al servidor remoto de autenticacion
+        String nActual = null;
+        String cActual = null;
+        boolean autenticado = false;
+        
+        try {
+            
+            a_rmifs_Interface auth = (a_rmifs_Interface) Naming.lookup("rmi://127.0.0.1:"+puerto+"/ServidorAutenticacion");            
+            
+            for (Usuario usuActual : usuarios) {
+
+                nActual = usuActual.getUsuario();
+                cActual = usuActual.getClave();
+                if (auth.autenticar(nActual,cActual)) {
+                    autenticado = true;
+                    break;
+                }
+
+            }
+        
+        // Manejo de excepciones.
+        } catch (MalformedURLException murle) {
+            System.out.println();
+            System.out.println("MalformedURLException");
+            System.out.println(murle);
+        
+        } catch (RemoteException re) {
+            System.out.println();
+            System.out.println("RemoteException");
+            System.out.println(re);
+        
+        } catch (NotBoundException nbe) {
+            System.out.println();
+            System.out.println("NotBoundException");
+            System.out.println(nbe);
+        }
+
+        // Si el usuario fue autenticado, guardar sus datos
+        if (autenticado) {
+            nombreCliente = nActual;
+            claveCliente = cActual;
+        }
+
+        return autenticado;
+
+    }
+
 
     public static void main(String[] args) {
 
@@ -71,120 +217,23 @@ public class c_rmifs {
         ArrayList<Usuario> usuarios = new ArrayList<Usuario>();
 
         if (archivoUsu != null) {
-
-            File archivoUsuarios = new File(archivoUsu);
-            BufferedReader lector = null;
-
-            //Apertura del archivo de usuarios
-
-            try {
-
-                lector = new BufferedReader(new FileReader(archivoUsuarios));
-                String linea = null;
-                String tokens[];
-                Usuario usr;
-
-                while ((linea = lector.readLine()) != null) {
-                    
-                    tokens = linea.split(":");
-                    usr = new Usuario(tokens[0],tokens[1]);
-                    usuarios.add(usr);
-
-                }
-            
-            //Excepciones
-            } catch (FileNotFoundException e) {
-                 //e.printStackTrace();
-                 System.out.println("Error, archivo no encontrado");
-            } catch (IOException e) {
-                 e.printStackTrace();
-            } finally {
-                try {
-                    if (lector != null) {
-                        lector.close();
-                    }
-                } catch (IOException e) {
-                }
-            }
-
+            usuarios = cargarArchivoUsuarios(archivoUsu);         
         // Solicitar los datos por pantalla
         } else {
-            String nombreActual = null;
-            String claveActual = null;
-
-            try {
-		        BufferedReader lectorEntrada = 
-                      new BufferedReader(new InputStreamReader(System.in));
- 
-                System.out.println("Inserte el nombre de usuario");
-		        nombreActual = lectorEntrada.readLine();
-            
-                System.out.println("Inserte la clave");
-                claveActual = lectorEntrada.readLine();
-               
-                Usuario uActual = new Usuario(nombreActual,claveActual);
-                usuarios.add(uActual);   
- 
-	        } catch (IOException io) {
-                System.out.println("Error en la lectura de datos de usuario");
-		        io.printStackTrace();
-	        }
-
-
+            usuarios = cargarUsuariosPorPantalla();         
         }
         
         
         // Una vez tomados los datos, autenticar al usuario 
 
-        boolean autenticado = false;
+        boolean autenticado = autenticarCliente(usuarios,puerto);
 
-        //Acceder al servidor remoto de autenticacion
-        String nActual = null;
-        String cActual = null;
-        
-        try {
-            
-            a_rmifs_Interface auth = (a_rmifs_Interface) Naming.lookup("rmi://127.0.0.1:"+puerto+"/ServidorAutenticacion");            
-            
-            for (Usuario usuActual : usuarios) {
-
-                nActual = usuActual.getUsuario();
-                cActual = usuActual.getClave();
-                if (auth.autenticar(nActual,cActual)) {
-                    autenticado = true;
-                    break;
-                }
-
-            }
-        
-        } catch (MalformedURLException murle) {
-            System.out.println();
-            System.out.println("MalformedURLException");
-            System.out.println(murle);
-        
-        } catch (RemoteException re) {
-            System.out.println();
-            System.out.println("RemoteException");
-            System.out.println(re);
-        
-        } catch (NotBoundException nbe) {
-            System.out.println();
-            System.out.println("NotBoundException");
-            System.out.println(nbe);
-        }
-
-               
         //Si el usuario no fue autenticado terminar la ejecucion del programa
 
         if (!autenticado) {
 
             System.out.println("No se pudo autenticar, terminando ejecucion");
             System.exit(EXIT_FAILURE);
-
-        } else {
-            
-            nombreCliente = nActual;
-            claveCliente = cActual;
         }
 
         System.out.println("ME AUTENTIQUE WOOO");

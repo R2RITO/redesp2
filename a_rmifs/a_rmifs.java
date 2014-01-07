@@ -8,7 +8,11 @@ public class a_rmifs {
     //Constantes
     private static final int EXIT_FAILURE = -1;
 
-
+    /* Metodo que crea el objeto a ofrecer remotamente
+     * y lo registra.
+     * @param usuarios Lista de usuarios validos
+     * @param puertoEspecifico el puerto en el que se ofrecera el servicio.
+    */
     public a_rmifs(ArrayList<Usuario> usuarios, int puertoEspecifico) {
 
         try {
@@ -22,7 +26,13 @@ public class a_rmifs {
 
     }
 
-    //Metodo "static" porque no requiere de un objeto para utilizarlo
+    /* Metodo que verifica los argumentos pasados al programa
+     * @param indice Indice del arreglo de argumentos
+     * @param longitud Longitud del arreglo de argumentos
+     * @param args Arreglo de argumentos
+     * @param listaFlags lista con los flags validos
+     */
+
     private static void verificarArg(int indice, int longitud, String[] args, ArrayList<String> listaFlags) {
 
         if ((indice+1 == longitud) || listaFlags.contains(args[indice+1])) {
@@ -43,12 +53,7 @@ public class a_rmifs {
         listaFlags.add("-f");
         String archivo = null;
 
-        //Verificacion de argumentos
-
-        if ((puerto == -1) || (archivo == null)) {
-            System.out.println("Error, especifique el puerto y el archivo");
-            System.exit(EXIT_FAILURE);
-        }
+        // Verificacion de argumentos
 
         int i;
         for (i=0; i<args.length; i++) {
@@ -63,6 +68,16 @@ public class a_rmifs {
             }
 
         }
+
+
+        if ((puerto == -1) || (archivo == null)) {
+            System.out.println(puerto);
+            System.out.println(archivo);
+            System.out.println("Error, especifique el puerto y el archivo");
+            System.exit(EXIT_FAILURE);
+        }
+
+
 
         //Apertura del archivo de usuarios y lectura
 
