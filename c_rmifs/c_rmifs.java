@@ -166,6 +166,80 @@ public class c_rmifs {
 
     }
 
+	public static void ejecutarComando(s_rmifs_Interface fs) {
+
+		// Se procede a escuchar los comandos del usuario
+        String comando = "";
+
+        BufferedReader stdin =
+            new BufferedReader(new InputStreamReader(System.in));
+   
+        while (true) {
+
+            // Se lee un comando de la entrada estandar
+            try {
+                System.out.print("Cliente> ");
+                comando = stdin.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            // Y se identifica que comando es y que acciones tomar.
+            if (comando.equalsIgnoreCase("rls")) {
+				try {
+					System.out.println(fs.rls(nombreCliente, claveCliente));
+				} catch (Exception e) {
+					System.out.println(e.getMessage());
+				}
+
+			} else if (comando.equalsIgnoreCase("lls")) {
+
+			} else if (comando.equalsIgnoreCase("sub")) {
+
+			} else if (comando.equalsIgnoreCase("baj")) {
+
+			} else if (comando.equalsIgnoreCase("bor")) {
+
+            } else if (comando.equalsIgnoreCase("info")) {
+
+			} else if (comando.equalsIgnoreCase("sal")) {
+
+            } else {
+
+                System.out.println("- Error - Comando desconocido.");
+
+            }
+        }
+
+
+	}
+
+	public static void servidorArchivos(int puerto) {
+
+		try {
+            
+            s_rmifs_Interface fs = (s_rmifs_Interface) 
+				Naming.lookup("rmi://127.0.0.1:"+puerto+"/s_rmifs");
+        	ejecutarComando(fs);
+
+        // Manejo de excepciones.
+        } catch (MalformedURLException murle) {
+            System.out.println();
+            System.out.println("MalformedURLException");
+            System.out.println(murle);
+        
+        } catch (RemoteException re) {
+            System.out.println();
+            System.out.println("RemoteException");
+            System.out.println(re);
+        
+        } catch (NotBoundException nbe) {
+            System.out.println();
+            System.out.println("NotBoundException");
+            System.out.println(nbe);
+        }
+
+	}
 
     public static void main(String[] args) {
 
@@ -236,8 +310,11 @@ public class c_rmifs {
             System.exit(EXIT_FAILURE);
         }
 
-        System.out.println("ME AUTENTIQUE WOOO");
         //Una vez autenticado, proceder a ejecutar los comandos del archivo
+
+		servidorArchivos(20812);
+		
+
 
     }
 }

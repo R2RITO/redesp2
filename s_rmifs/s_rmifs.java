@@ -28,16 +28,22 @@ public class s_rmifs {
     // Lista de archivos disponibles en el servidor de archivos
     private static ArrayList<Archivo> sFiles = new ArrayList<Archivo>();
 
+    // Lista a utilizar para el Log.
+    private static ArrayList<String> log = new ArrayList<String>();
+
     /* CLASES PARA LOS HILOS */
 
     public static class s_rmifs_thread extends Thread {
 
-        public s_rmifs_thread() {
+        private s_rmifs_Interface fs;
+
+        public s_rmifs_thread(s_rmifs_Interface fs) {
+            this.fs = fs;
         }
        
         @Override
         public void run() {
-            new s_rmifs(sFiles, 21000);     
+            new s_rmifs(sFiles, 20812, this.fs); 
         }        
     }
 
@@ -53,13 +59,12 @@ public class s_rmifs {
      * @param puertoEspecifico Es el puerto por donde se asociara
      * al objeto remoto.
      */
-    public s_rmifs(ArrayList<Archivo> sFiles, int puertoEspecifico) {
+    public s_rmifs(ArrayList<Archivo> sFiles, int puertoEspecifico, s_rmifs_Interface fs) {
 
         try {
             String puerto = Integer.toString(puertoEspecifico);
-            LocateRegistry.createRegistry(21000);
-            s_rmifs_Interface fileserver = new s_rmifs_Implementation(sFiles);
-            Naming.rebind("rmi://127.0.0.1:"+puerto+"/s_rmifs", fileserver);
+            LocateRegistry.createRegistry(puertoEspecifico);
+            Naming.rebind("rmi://127.0.0.1:"+puerto+"/s_rmifs", fs);
         } catch (Exception e) {
             System.out.println("Trouble: " + e);
         }
@@ -208,10 +213,18 @@ public class s_rmifs {
             }
         }
 
-        s_rmifs_thread servidor = new s_rmifs_thread();
+        s_rmifs_Interface fileserver = null;
 
-        // Se ejecuta entonces el servidor:
-        servidor.start();
+        try {
+            fileserver = new s_rmifs_Implementation(sFiles, log);
+            s_rmifs_thread servidor = new s_rmifs_thread(fileserver);
+            // Se ejecuta entonces el servidor:
+            servidor.start();
+
+        } catch (Exception e) {
+            System.out.println("- ERROR - Problema al iniciar el servidor: "+e.getMessage());
+            System.exit(EXIT_FAILURE);
+        }
 
         boolean servidorActivo = true;
 
@@ -237,8 +250,12 @@ public class s_rmifs {
 
             // Y se identifica que comando es y que acciones tomar.
             if (comando.equalsIgnoreCase("log")) {
-
-                System.out.println("Falta Implementar Esta PArte");
+                
+                try {
+                    System.out.println(fileserver.imprimirLog());
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
 
             } else if (comando.equalsIgnoreCase("sal")) {
 

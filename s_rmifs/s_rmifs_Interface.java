@@ -65,4 +65,10 @@ public interface s_rmifs_Interface extends java.rmi.Remote {
      */
     public void sal(String user, String password) 
     throws java.rmi.RemoteException;
+
+    /*
+     * Procedimiento que imprime la lista de logs.
+     */
+    public String imprimirLog()
+    throws java.rmi.RemoteException;
 }

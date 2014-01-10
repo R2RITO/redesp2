@@ -33,13 +33,14 @@ public class      s_rmifs_Implementation
      * Constructor para la clase s_rmifs_Implementation
      * @param sFiles La lista de archivos que posee el servidor de archivos
      */
-    public s_rmifs_Implementation(ArrayList<Archivo> sFiles) 
+    public s_rmifs_Implementation(ArrayList<Archivo> sFiles, ArrayList<String> log) 
     throws java.rmi.RemoteException
     {
         // Inicializamos el objeto remoto
         super();
         // Asignamos la lista de archivos al objeto
         this.sFiles = sFiles;
+        this.log = log;
     }
 
 
@@ -59,12 +60,20 @@ public class      s_rmifs_Implementation
     }
 
     /*
-     * Procedimiento que imprime la lista de logs.
+     * Procedimiento que retorna un String con la lista de logs.
      */
-    public static void imprimirLog() {
+    public String imprimirLog() throws java.rmi.RemoteException {
+
+        if (log.size() == 0) {
+             return " - El log esta vacio - ";
+        } 
+        
+        String result = "";
+
         for (int i=0; i<log.size(); i++) {
-            System.out.println(log.get(i));
+             result += log.get(i)+"\n";
         }
+        return result;
     }
 
     /*
