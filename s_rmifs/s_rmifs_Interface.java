@@ -71,4 +71,16 @@ public interface s_rmifs_Interface extends java.rmi.Remote {
      */
     public String imprimirLog()
     throws java.rmi.RemoteException;
+
+
+    /* Metodo para autenticar un usuario
+     * @param nombre El nombre del usuario
+     * @param clave La clave del usuario
+     * @return El resultado de la autenticacion, true si fue exitosa.
+     */
+
+    public Boolean autenticar(String nombre, String clave)
+    throws java.rmi.RemoteException;
+
+
 }

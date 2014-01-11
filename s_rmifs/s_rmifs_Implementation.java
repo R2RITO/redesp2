@@ -1,6 +1,7 @@
 import java.util.*;
 import java.io.*;
 import java.rmi.*;
+import java.net.MalformedURLException;
 import java.rmi.server.UnicastRemoteObject;
 
 
@@ -25,6 +26,11 @@ public class      s_rmifs_Implementation
      */
     private ArrayList<Archivo> sFiles;
 
+    /* IP o hostname del servidor de autenticacion */
+    private static String servidorAuth = null;
+
+    /* Puerto para acceder al servidor de autenticacion */
+    private static String puertoAuth = null;
 
     /* Lista que representa al log */
     private static ArrayList<String> log;
@@ -33,7 +39,7 @@ public class      s_rmifs_Implementation
      * Constructor para la clase s_rmifs_Implementation
      * @param sFiles La lista de archivos que posee el servidor de archivos
      */
-    public s_rmifs_Implementation(ArrayList<Archivo> sFiles, ArrayList<String> log) 
+    public s_rmifs_Implementation(ArrayList<Archivo> sFiles, ArrayList<String> log, String servAuth, String puerto) 
     throws java.rmi.RemoteException
     {
         // Inicializamos el objeto remoto
@@ -41,6 +47,8 @@ public class      s_rmifs_Implementation
         // Asignamos la lista de archivos al objeto
         this.sFiles = sFiles;
         this.log = log;
+        this.servidorAuth = servAuth;
+        this.puertoAuth = puerto;
     }
 
 
@@ -221,5 +229,45 @@ public class      s_rmifs_Implementation
         actualizarLog(user, "Ejecuto el comando sal");
 
     }
+
+    /* Metodo para autenticar un usuario
+     * @param nombre El nombre del usuario
+     * @param clave La clave del usuario
+     * @return El resultado de la autenticacion, true si fue exitosa.
+     */
+
+    public Boolean autenticar(String nombre, String clave)
+    throws java.rmi.RemoteException {
+        
+        try {
+            
+            a_rmifs_Interface auth = (a_rmifs_Interface) Naming.lookup("rmi://"+servidorAuth+":"+puertoAuth+"/s_rmifs");            
+            return auth.autenticar(nombre,clave);
+        
+        // Manejo de excepciones.
+        } catch (MalformedURLException murle) {
+            System.out.println();
+            System.out.println("MalformedURLException");
+            System.out.println(murle);
+        
+        } catch (RemoteException re) {
+            System.out.println();
+            System.out.println("RemoteException");
+            System.out.println(re);
+        
+        } catch (NotBoundException nbe) {
+            System.out.println();
+            System.out.println("NotBoundException");
+            System.out.println(nbe);
+            System.out.println("Nombre : " + nombre);
+            System.out.println("Clave : " + clave);
+            System.out.println("Clave : " + clave);
+            System.out.println("Clave : " + clave);
+        }
+
+        return false;
+
+    }
+
 }
 

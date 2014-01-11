@@ -17,7 +17,7 @@ public class a_rmifs {
 
         try {
             String puerto = Integer.toString(puertoEspecifico);
-            LocateRegistry.createRegistry(21000);            
+            LocateRegistry.createRegistry(Integer.parseInt(puerto));            
             a_rmifs_Interface auth = (a_rmifs_Interface) new a_rmifs_Implementation(usuarios);
             Naming.rebind("rmi://127.0.0.1:"+puerto+"/ServidorAutenticacion", auth);
         } catch (Exception e) {

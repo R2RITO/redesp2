@@ -49,6 +49,22 @@ public class s_rmifs {
 
 
     /* METODOS PARA EL MAIN DEL SERVIDOR DE ARCHIVOS */
+
+
+    /* Metodo que verifica los argumentos pasados al programa
+     * @param indice Indice del arreglo de argumentos
+     * @param longitud Longitud del arreglo de argumentos
+     * @param args Arreglo de argumentos
+     * @param listaFlags lista con los flags validos
+     */
+    private static void verificarArg(int indice, int longitud, String[] args, ArrayList<String> listaFlags) {
+
+        if ((indice+1 == longitud) || listaFlags.contains(args[indice+1])) {
+            System.out.println("- ERROR - Sintaxis: java s_rmifs -l puertolocal -h host -r puerto");
+            System.exit(EXIT_FAILURE);
+        }
+
+    }
     
 
     /*
@@ -211,6 +227,41 @@ public class s_rmifs {
 
         System.out.println(" - Iniciando Servidor de Archivos - ");
 
+        //Definicion de constantes y listas
+        String puertolocal = null;
+        String puerto      = null;
+        String host       = null;
+        ArrayList<String> listaFlags = new ArrayList<String>();
+        listaFlags.add("-l");
+        listaFlags.add("-h");
+        listaFlags.add("-r");
+
+        // Verificacion de argumentos
+
+        int i;
+        for (i=0; i<args.length; i++) {
+
+            if (args[i].equals("-l")) {
+                verificarArg(i,args.length,args,listaFlags);
+                puertolocal = args[i+1];
+
+            } else if (args[i].equals("-h")) {
+                verificarArg(i,args.length,args,listaFlags);
+                host = args[i+1];
+            } else if (args[i].equals("-r")) {
+                verificarArg(i,args.length,args,listaFlags);
+                puerto = args[i+1];
+            }
+
+        }
+
+
+        if ((puerto == null) || (host == null) || (puertolocal == null)) {
+            System.out.println("- ERROR - Problema de sintaxis al ejecutar.");
+            System.out.println("Sintaxis: java s_rmifs -l puertolocal -h host -p puerto");
+            System.exit(EXIT_FAILURE);
+        }
+
         File cwf = new File(cwfName);
         
         // Si el archivo de registro ya existe, debemos hacer verificaciones
@@ -251,7 +302,7 @@ public class s_rmifs {
         s_rmifs_Interface fileserver = null;
 
         try {
-            fileserver = new s_rmifs_Implementation(sFiles, log);
+            fileserver = new s_rmifs_Implementation(sFiles, log, host, puerto);
             s_rmifs_thread servidor = new s_rmifs_thread(fileserver);
             // Se ejecuta entonces el servidor:
             servidor.start();
