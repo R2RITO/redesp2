@@ -240,6 +240,8 @@ public class c_rmifs {
 				System.out.println(fs.rls(nombreCliente, claveCliente));
 			} catch (Exception e) {
 				System.out.println(e.getMessage());
+                System.out.println(" - ERROR - El Servidor de Archivos ya no esta disponible");
+                System.exit(EXIT_FAILURE);
 			}
 
 		} else if (comando.equalsIgnoreCase("lls")) {
@@ -265,6 +267,8 @@ public class c_rmifs {
 
             } catch (Exception e) {
                 System.out.println(e.getMessage());
+                System.out.println(" - ERROR - El Servidor de Archivos ya no esta disponible");
+                System.exit(EXIT_FAILURE);
             } 
 
 		} else if (comando.equalsIgnoreCase("baj")) {
@@ -287,6 +291,8 @@ public class c_rmifs {
 
             } catch (Exception e) {
                 System.out.println(e.getMessage());
+                System.out.println(" - ERROR - El Servidor de Archivos ya no esta disponible");
+                System.exit(EXIT_FAILURE);
             }
 
 		} else if (comando.equalsIgnoreCase("bor")) {
@@ -295,6 +301,8 @@ public class c_rmifs {
 				System.out.println(fs.bor(nombreCliente, claveCliente, argumento));
 			} catch (Exception e) {
 				System.out.println(e.getMessage());
+                System.out.println(" - ERROR - El Servidor de Archivos ya no esta disponible");
+                System.exit(EXIT_FAILURE);
 			}
 
         } else if (comando.equalsIgnoreCase("info")) {
@@ -308,14 +316,13 @@ public class c_rmifs {
                 System.exit(1);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
+                System.out.println(" - ERROR - El Servidor de Archivos ya no esta disponible");
+                System.exit(EXIT_FAILURE);
             }
 
         } else {
-
             System.out.println("- Error - Comando desconocido.");
-
         }
-
     }
 
 
@@ -331,23 +338,19 @@ public class c_rmifs {
 
         BufferedReader stdin =
             new BufferedReader(new InputStreamReader(System.in));
-   
+ 
         while (true) {
 
             // Se lee un comando de la entrada estandar
             try {
                 System.out.print("Cliente> ");
                 comando = stdin.readLine();
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
             ejecutarComando(fs, comando);
-
         }
-
-
 	}
 
     /* Funcion que lista los archivos locales del cliente
