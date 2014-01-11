@@ -53,6 +53,8 @@ public class a_rmifs {
         listaFlags.add("-f");
         String archivo = null;
 
+        System.out.println(" - Iniciando el Servidor de Autenticacion - ");
+
         // Verificacion de argumentos
 
         int i;
@@ -114,7 +116,7 @@ public class a_rmifs {
             }
         }
 
-
+        System.out.println(" - Servidor de Autenticacion: Listo - ");
         //Correr el servidor
         new a_rmifs(usuarios,puerto);
     }

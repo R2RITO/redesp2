@@ -189,9 +189,11 @@ public class s_rmifs {
             String actual;
 
             for (i=0; i<sFiles.size(); i++) {
-                actual = sFiles.get(i).toFileLine();
-                bw.write(actual);
-                bw.newLine();
+                if (!sFiles.get(i).getDueno().equals("SYSTEM")) {
+                    actual = sFiles.get(i).toFileLine();
+                    bw.write(actual);
+                    bw.newLine();
+                }
             }
 
             bw.close();

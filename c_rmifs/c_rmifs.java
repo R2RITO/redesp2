@@ -19,6 +19,17 @@ public class c_rmifs {
     // Ruta donde va a ejecutarse el servidor
     private static String cwdPath   = "."; 
 
+    // Nombre del archivo de usuarios especificado por el usuario
+    private static String archivoUsu = null;
+
+    // Direccion (IP o Host) del servidor especificado por el usuario
+    private static String servidor = null;
+
+    // Numero de puerto especificado por el usuario
+    private static int puerto = -1;
+
+    // Nombre del archivo de comandos especificado por el usuario
+    private static String comandos = null;
 
 
     /* Metodo que verifica los argumentos pasados al programa
@@ -297,20 +308,16 @@ public class c_rmifs {
 
         // Obtener los archivos
         File[] listaArchivos = cwd.listFiles();
-        String archivos = "";
+        String archivos = "\n";
         String actual = null;    
 
         int i;
         for (i=0; i<listaArchivos.length; i++) {
             
             actual = listaArchivos[i].getName();
-            archivos = (archivos + actual + "\n\n");
-            
+            archivos = (archivos +i+". Archivo:"+ actual + "\n\n");
         }
-    
         return archivos;
-
-
     }
 
     /* Funcion que lista los comandos disponibles al cliente
@@ -472,10 +479,11 @@ public class c_rmifs {
 
         //Verificacion de argumentos
 
-        String archivoUsu = null;
-        String servidor = null;
-        int puerto = -1;
-        String comandos = null;
+        // Agregamos ciertos valores por defecto a las variables globales
+        archivoUsu = null;
+        servidor = null;
+        puerto = -1;
+        comandos = null;
 
         ArrayList<String> listaFlags = new ArrayList<String>();
         listaFlags.add("-p");
