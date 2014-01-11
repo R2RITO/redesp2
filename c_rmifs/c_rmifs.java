@@ -185,7 +185,140 @@ public class c_rmifs {
 
     }
 
-	public static void ejecutarComando(s_rmifs_Interface fs) {
+    public static void ejecutarComandosArchivo(s_rmifs_Interface fs, String filename) {
+
+        if (filename != null) {
+
+            File archivo = new File(filename);
+            BufferedReader lector = null;
+
+            // Apertura del archivo de comandos
+            try {
+
+                lector = new BufferedReader(new FileReader(archivo));
+                String linea = null;
+
+                while ((linea = lector.readLine()) != null) {
+                    System.out.println("Cliente> "+linea);
+                    ejecutarComando(fs, linea);
+                }
+
+            //Excepciones
+            } catch (FileNotFoundException e) {
+                //e.printStackTrace();
+                System.out.println("- ERROR - Archivo de comandos no encontrado");
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (lector != null) {
+                    lector.close();
+                    }
+                } catch (IOException e) {
+                }
+            }
+        }
+    }
+
+    
+    public static void ejecutarComando(s_rmifs_Interface fs, String lineacomando) {
+        
+        String[] ordenes;
+        String argumento = "";
+        String comando   = "";
+
+        // Obtener el comando y sus argumentos
+        ordenes = lineacomando.split(" ");
+        comando = ordenes[0];
+        if (ordenes.length > 1) {
+            argumento = ordenes[1];
+        }
+
+        // Y se identifica que comando es y que acciones tomar.
+        if (comando.equalsIgnoreCase("rls")) {
+			try {
+				System.out.println(fs.rls(nombreCliente, claveCliente));
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+			}
+
+		} else if (comando.equalsIgnoreCase("lls")) {
+            
+            System.out.println(lls(nombreCliente,claveCliente));
+
+		} else if (comando.equalsIgnoreCase("sub")) {
+
+            try {
+
+                //Comprobar que el archivo existe localmente
+                if (comprobarArchivo(argumento)) {                        
+                    // Ejecutar el comando
+                    byte[] archivoFormateado = formatearArchivo(argumento);
+                    if (archivoFormateado != null) {
+                        System.out.println(fs.sub(nombreCliente, claveCliente, argumento, archivoFormateado));
+                    }                        
+                    
+                } else {
+
+                    System.out.println("El archivo solicitado no existe");
+                }
+
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            } 
+
+		} else if (comando.equalsIgnoreCase("baj")) {
+            try {
+
+                //Comprobar que el archivo no existe localmente
+                if (!comprobarArchivo(argumento)) {                        
+                    // Ejecutar el comando
+                    byte[] archivoFormateado = fs.baj(nombreCliente, claveCliente, argumento);
+                    if (archivoFormateado != null) {
+                        System.out.println(construirArchivo(argumento, archivoFormateado));
+                    } else {
+                        System.out.println("Error al construir el archivo");
+                    }
+                    
+                } else {
+
+                    System.out.println("El archivo solicitado ya existe");
+                }
+
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+
+		} else if (comando.equalsIgnoreCase("bor")) {
+            
+            try {
+				System.out.println(fs.bor(nombreCliente, claveCliente, argumento));
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+			}
+
+        } else if (comando.equalsIgnoreCase("info")) {
+
+           System.out.println(info(nombreCliente, claveCliente));
+
+		} else if (comando.equalsIgnoreCase("sal")) {
+
+           System.out.println("Terminando ejecucion.");
+           System.exit(1);
+
+        } else {
+
+            System.out.println("- Error - Comando desconocido.");
+
+        }
+
+    }
+
+
+	public static void escucharCliente(s_rmifs_Interface fs, String comandos) {
+
+        // Se ejecutan los comandos del archivo, si es que los hay.
+        ejecutarComandosArchivo(fs, comandos);
 
 		// Se procede a escuchar los comandos del usuario
         String comando = "";
@@ -202,94 +335,12 @@ public class c_rmifs {
                 System.out.print("Cliente> ");
                 comando = stdin.readLine();
 
-                // Obtener el comando y sus argumentos
-                ordenes = comando.split(" ");
-                comando = ordenes[0];
-                if (ordenes.length > 1) {
-                    argumento = ordenes[1];
-                }
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-            // Y se identifica que comando es y que acciones tomar.
-            if (comando.equalsIgnoreCase("rls")) {
-				try {
-					System.out.println(fs.rls(nombreCliente, claveCliente));
-				} catch (Exception e) {
-					System.out.println(e.getMessage());
-				}
+            ejecutarComando(fs, comando);
 
-			} else if (comando.equalsIgnoreCase("lls")) {
-                
-                System.out.println(lls(nombreCliente,claveCliente));
-
-			} else if (comando.equalsIgnoreCase("sub")) {
-
-                try {
- 
-                    //Comprobar que el archivo existe localmente
-                    if (comprobarArchivo(argumento)) {                        
-                        // Ejecutar el comando
-                        byte[] archivoFormateado = formatearArchivo(argumento);
-                        if (archivoFormateado != null) {
-                            System.out.println(fs.sub(nombreCliente, claveCliente, argumento, archivoFormateado));
-                        }                        
-                        
-                    } else {
-
-                        System.out.println("El archivo solicitado no existe");
-                    }
-
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
-                } 
-
-			} else if (comando.equalsIgnoreCase("baj")) {
-                try {
- 
-                    //Comprobar que el archivo no existe localmente
-                    if (!comprobarArchivo(argumento)) {                        
-                        // Ejecutar el comando
-                        byte[] archivoFormateado = fs.baj(nombreCliente, claveCliente, argumento);
-                        if (archivoFormateado != null) {
-                            System.out.println(construirArchivo(argumento, archivoFormateado));
-                        } else {
-                            System.out.println("Error al construir el archivo");
-                        }
-                        
-                    } else {
-
-                        System.out.println("El archivo solicitado ya existe");
-                    }
-
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
-                }
-
-			} else if (comando.equalsIgnoreCase("bor")) {
-                
-                try {
-					System.out.println(fs.bor(nombreCliente, claveCliente, argumento));
-				} catch (Exception e) {
-					System.out.println(e.getMessage());
-				}
-
-            } else if (comando.equalsIgnoreCase("info")) {
-
-               System.out.println(info(nombreCliente, claveCliente));
-
-			} else if (comando.equalsIgnoreCase("sal")) {
-    
-               System.out.println("Terminando ejecucion.");
-               System.exit(1);
-
-            } else {
-
-                System.out.println("- Error - Comando desconocido.");
-
-            }
         }
 
 
@@ -448,13 +499,13 @@ public class c_rmifs {
 
     } 
 
-	public static void servidorArchivos(int puerto) {
+	public static void servidorArchivos(int puerto, String comandos) {
 
 		try {
             
             s_rmifs_Interface fs = (s_rmifs_Interface) 
 				Naming.lookup("rmi://127.0.0.1:"+puerto+"/s_rmifs");
-        	ejecutarComando(fs);
+        	escucharCliente(fs, comandos);
 
         // Manejo de excepciones.
         } catch (MalformedURLException murle) {
@@ -542,15 +593,13 @@ public class c_rmifs {
 
         if (!autenticado) {
 
-            System.out.println("No se pudo autenticar, terminando ejecucion");
+            System.out.println("- ERROR - No se pudo autenticar: terminando ejecucion");
             System.exit(EXIT_FAILURE);
         }
 
         //Una vez autenticado, proceder a ejecutar los comandos del archivo
 
-		servidorArchivos(20812);
-		
-
+		servidorArchivos(20812, comandos);
 
     }
 }
