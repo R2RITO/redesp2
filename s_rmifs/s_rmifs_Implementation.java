@@ -95,7 +95,7 @@ public class      s_rmifs_Implementation
     throws java.rmi.RemoteException {
         
         //Actualizamos el log.
-        String infoComando = "Ejecuto el comando rls que lista los archivos " +
+        String infoComando = "Ejecuto el comando rls: \n\tListar los archivos " +
                              "en el servidor remoto";
         actualizarLog(user, infoComando);
 
@@ -119,8 +119,8 @@ public class      s_rmifs_Implementation
     throws java.rmi.RemoteException {
 
         //Actualizamos el log.
-        String infoComando = "Ejecuto el comando sub que sube un archivo " +
-                             "al servidor remoto";
+        String infoComando = "Ejecuto el comando sub: \n\tSubir "+filename+
+                             " al servidor remoto";
         actualizarLog(user, infoComando);
 
         for (int i=0; i<sFiles.size(); i++) {
@@ -159,8 +159,8 @@ public class      s_rmifs_Implementation
     throws java.rmi.RemoteException {
 
         //Actualizamos el log.
-        String infoComando = "Ejecuto el comando baj que descarga un " +
-                             "archivo del servidor remoto";
+        String infoComando = "Ejecuto el comando baj: \n\tDescargar "+filename+
+                             " archivo del servidor remoto";
         actualizarLog(user, infoComando);
 
         int i;
@@ -203,8 +203,8 @@ public class      s_rmifs_Implementation
 
         //Actualizamos el log.
 
-        String infoComando = "Ejecuto el comando bor que borra un archivo " +
-                             "del servidor remoto que pertenezca al usuario";
+        String infoComando = "Ejecuto el comando bor: \n\tBorrar" + filename+
+                             " del servidor remoto siempre que sea el dueno";
         actualizarLog(user, infoComando);
 
 
@@ -236,7 +236,7 @@ public class      s_rmifs_Implementation
         
         //Actualizamos el log.
 
-        String infoComando = "Ejecuto el comando sal que termina la " +
+        String infoComando = "Ejecuto el comando sal: \n\tTerminar la " +
                              "ejecucion del cliente";
         actualizarLog(user, infoComando);
 

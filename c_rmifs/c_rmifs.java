@@ -299,12 +299,16 @@ public class c_rmifs {
 
         } else if (comando.equalsIgnoreCase("info")) {
 
-           System.out.println(info(nombreCliente, claveCliente));
+            System.out.println(info(nombreCliente, claveCliente));
 
 		} else if (comando.equalsIgnoreCase("sal")) {
-
-           System.out.println("Terminando ejecucion.");
-           System.exit(1);
+            try {
+                fs.sal(nombreCliente, claveCliente);
+                System.out.println("- ALERT - Terminando ejecucion.");
+                System.exit(1);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
 
         } else {
 
