@@ -36,14 +36,16 @@ public class s_rmifs {
     public static class s_rmifs_thread extends Thread {
 
         private s_rmifs_Interface fs;
+        private String puertolocal;
 
-        public s_rmifs_thread(s_rmifs_Interface fs) {
+        public s_rmifs_thread(s_rmifs_Interface fs, String puertolocal) {
             this.fs = fs;
+            this.puertolocal = puertolocal;
         }
        
         @Override
         public void run() {
-            new s_rmifs(sFiles, 20812, this.fs); 
+            new s_rmifs(sFiles, this.puertolocal, this.fs); 
         }        
     }
 
@@ -75,10 +77,10 @@ public class s_rmifs {
      * @param puertoEspecifico Es el puerto por donde se asociara
      * al objeto remoto.
      */
-    public s_rmifs(ArrayList<Archivo> sFiles, int puertoEspecifico, s_rmifs_Interface fs) {
+    public s_rmifs(ArrayList<Archivo> sFiles, String puerto, s_rmifs_Interface fs) {
 
         try {
-            String puerto = Integer.toString(puertoEspecifico);
+            int puertoEspecifico = Integer.parseInt(puerto);
             LocateRegistry.createRegistry(puertoEspecifico);
             Naming.rebind("rmi://127.0.0.1:"+puerto+"/s_rmifs", fs);
         } catch (Exception e) {
@@ -303,7 +305,7 @@ public class s_rmifs {
 
         try {
             fileserver = new s_rmifs_Implementation(sFiles, log, host, puerto);
-            s_rmifs_thread servidor = new s_rmifs_thread(fileserver);
+            s_rmifs_thread servidor = new s_rmifs_thread(fileserver, puertolocal);
             // Se ejecuta entonces el servidor:
             servidor.start();
 

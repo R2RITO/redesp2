@@ -599,7 +599,7 @@ public class c_rmifs {
 
         //Una vez autenticado, proceder a ejecutar los comandos del archivo
 
-		servidorArchivos(20812, comandos);
+		servidorArchivos(puerto, comandos);
 
     }
 }
