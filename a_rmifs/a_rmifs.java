@@ -1,4 +1,5 @@
 import java.rmi.Naming;
+import java.net.InetAddress;
 import java.rmi.registry.LocateRegistry;
 import java.util.*;
 import java.io.*;
@@ -19,7 +20,8 @@ public class a_rmifs {
             String puerto = Integer.toString(puertoEspecifico);
             LocateRegistry.createRegistry(Integer.parseInt(puerto));            
             a_rmifs_Interface auth = (a_rmifs_Interface) new a_rmifs_Implementation(usuarios);
-            Naming.rebind("rmi://127.0.0.1:"+puerto+"/a_rmifs", auth);
+            String hostName = InetAddress.getLocalHost().getHostName();
+            Naming.rebind("rmi://"+hostName+":"+puerto+"/a_rmifs", auth);
         } catch (Exception e) {
             System.out.println("Trouble: " + e);
         }

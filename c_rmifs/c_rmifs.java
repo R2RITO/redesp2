@@ -503,12 +503,12 @@ public class c_rmifs {
 
     } 
 
-	public static void servidorArchivos(int puerto, String comandos) {
+	public static void servidorArchivos(int puerto, String comandos, String hostname) {
 
 		try {
             
             s_rmifs_Interface fs = (s_rmifs_Interface) 
-				Naming.lookup("rmi://127.0.0.1:"+puerto+"/s_rmifs");
+				Naming.lookup("rmi://"+hostname+":"+puerto+"/s_rmifs");
         	escucharCliente(fs, comandos);
 
         // Manejo de excepciones.
@@ -603,7 +603,7 @@ public class c_rmifs {
 
         //Una vez autenticado, proceder a ejecutar los comandos del archivo
 
-		servidorArchivos(puerto, comandos);
+		servidorArchivos(puerto, comandos, servidor);
 
     }
 }

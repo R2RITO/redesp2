@@ -1,4 +1,5 @@
 import java.rmi.Naming;
+import java.net.InetAddress;
 import java.rmi.registry.LocateRegistry;
 import java.util.*;
 import java.io.*;
@@ -82,7 +83,8 @@ public class s_rmifs {
         try {
             int puertoEspecifico = Integer.parseInt(puerto);
             LocateRegistry.createRegistry(puertoEspecifico);
-            Naming.rebind("rmi://127.0.0.1:"+puerto+"/s_rmifs", fs);
+            String hostName = InetAddress.getLocalHost().getHostName();
+            Naming.rebind("rmi://"+hostName+":"+puerto+"/s_rmifs", fs);
         } catch (Exception e) {
             System.out.println("Trouble: " + e);
         }
