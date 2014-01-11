@@ -241,7 +241,7 @@ public class      s_rmifs_Implementation
         
         try {
             
-            a_rmifs_Interface auth = (a_rmifs_Interface) Naming.lookup("rmi://"+servidorAuth+":"+puertoAuth+"/s_rmifs");            
+            a_rmifs_Interface auth = (a_rmifs_Interface) Naming.lookup("rmi://"+servidorAuth+":"+puertoAuth+"/a_rmifs");            
             return auth.autenticar(nombre,clave);
         
         // Manejo de excepciones.
@@ -261,8 +261,8 @@ public class      s_rmifs_Implementation
             System.out.println(nbe);
             System.out.println("Nombre : " + nombre);
             System.out.println("Clave : " + clave);
-            System.out.println("Clave : " + clave);
-            System.out.println("Clave : " + clave);
+            System.out.println("Clave : " + servidorAuth);
+            System.out.println("Clave : " + puertoAuth);
         }
 
         return false;
