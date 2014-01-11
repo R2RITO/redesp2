@@ -74,5 +74,12 @@ public class Archivo {
         return "Archivo: "+this.filename+", Dueno: "+this.dueno;
     }
 
-}
+    /* Metodo para generar un string con el nombre del archivo
+     * y el dueño separados por el caracter ":"
+     * @return El string con el nombre y el dueño
+     */
+    public String toFileLine() {
+        return this.filename + ":" + this.dueno;
+    }
 
+}

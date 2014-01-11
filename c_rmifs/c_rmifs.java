@@ -7,9 +7,17 @@ import java.io.*;
 
 public class c_rmifs {
 
-    public static final int EXIT_FAILURE = -1;
-    public static String nombreCliente = null;
-    public static String claveCliente = null;
+    /* Constante para salir del programa por error */
+    private static final int EXIT_FAILURE = -1;
+
+    /* Nombre del cliente autenticado */
+    private static String nombreCliente = null;
+
+    /* Clave del cliente autenticado */
+    private static String claveCliente = null;
+
+    // Ruta donde va a ejecutarse el servidor
+    private static String cwdPath   = "."; 
 
 
 
@@ -170,6 +178,8 @@ public class c_rmifs {
 
 		// Se procede a escuchar los comandos del usuario
         String comando = "";
+        String argumento = "";
+        String[] ordenes;
 
         BufferedReader stdin =
             new BufferedReader(new InputStreamReader(System.in));
@@ -180,6 +190,14 @@ public class c_rmifs {
             try {
                 System.out.print("Cliente> ");
                 comando = stdin.readLine();
+
+                // Obtener el comando y sus argumentos
+                ordenes = comando.split(" ");
+                comando = ordenes[0];
+                if (ordenes.length > 1) {
+                    argumento = ordenes[1];
+                }
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -193,16 +211,68 @@ public class c_rmifs {
 				}
 
 			} else if (comando.equalsIgnoreCase("lls")) {
+                
+                System.out.println(lls(nombreCliente,claveCliente));
 
 			} else if (comando.equalsIgnoreCase("sub")) {
 
+                try {
+ 
+                    //Comprobar que el archivo existe localmente
+                    if (comprobarArchivo(argumento)) {                        
+                        // Ejecutar el comando
+                        byte[] archivoFormateado = formatearArchivo(argumento);
+                        if (archivoFormateado != null) {
+                            System.out.println(fs.sub(nombreCliente, claveCliente, argumento, archivoFormateado));
+                        }                        
+                        
+                    } else {
+
+                        System.out.println("El archivo solicitado no existe");
+                    }
+
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                } 
+
 			} else if (comando.equalsIgnoreCase("baj")) {
+                try {
+ 
+                    //Comprobar que el archivo no existe localmente
+                    if (!comprobarArchivo(argumento)) {                        
+                        // Ejecutar el comando
+                        byte[] archivoFormateado = fs.baj(nombreCliente, claveCliente, argumento);
+                        if (archivoFormateado != null) {
+                            System.out.println(construirArchivo(argumento, archivoFormateado));
+                        } else {
+                            System.out.println("Error al construir el archivo");
+                        }
+                        
+                    } else {
+
+                        System.out.println("El archivo solicitado ya existe");
+                    }
+
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
 
 			} else if (comando.equalsIgnoreCase("bor")) {
+                
+                try {
+					System.out.println(fs.bor(nombreCliente, claveCliente, argumento));
+				} catch (Exception e) {
+					System.out.println(e.getMessage());
+				}
 
             } else if (comando.equalsIgnoreCase("info")) {
 
+               System.out.println(info(nombreCliente, claveCliente));
+
 			} else if (comando.equalsIgnoreCase("sal")) {
+    
+               System.out.println("Terminando ejecucion.");
+               System.exit(1);
 
             } else {
 
@@ -213,6 +283,163 @@ public class c_rmifs {
 
 
 	}
+
+    /* Funcion que lista los archivos locales del cliente
+    *  @param nombre El nombre del usuario
+    *  @param clave La clave del usuario
+    *  Ambos parametros se solicitan por estandarizacion, no son utilizados.
+    *  @return El string con los archivos locales.
+    */
+    public static String lls(String nombre, String clave) {
+
+        // Abrir el directorio del cliente
+        File cwd = new File(cwdPath);
+
+        // Obtener los archivos
+        File[] listaArchivos = cwd.listFiles();
+        String archivos = "";
+        String actual = null;    
+
+        int i;
+        for (i=0; i<listaArchivos.length; i++) {
+            
+            actual = listaArchivos[i].getName();
+            archivos = (archivos + actual + "\n\n");
+            
+        }
+    
+        return archivos;
+
+
+    }
+
+    /* Funcion que lista los comandos disponibles al cliente
+    *  @param nombre El nombre del usuario
+    *  @param clave La clave del usuario
+    *  Ambos parametros se solicitan por estandarizacion, no son utilizados.
+    *  @return El string con los comandos disponibles
+    */
+    public static String info(String nombre, String clave) {
+
+        String comandos = "";
+
+        //Especificar cada comando.
+
+        String rls = "rls : \n" +
+                     "Muestra la lista de archivos que se encuentran en el " +
+                     "servidor remoto. \n\n"; 
+
+        String lls = "lls : \n" +
+                     "Muestra la lista de archivos que se encuentran en el " +
+                     "directorio local donde se ejecuto el cliente. \n\n";
+
+        String sub = "sub : \n" +
+                     "Sube un archivo al servidor remoto, el archivo debe " +
+                     "existir en el directorio local y no debe existir " +
+                     "en el servidor remoto. \n\n";
+        
+        String baj = "baj : \n" +
+                     "Baja un archivo desde el servidor remoto, el archivo " +
+                     "no debe existir en el directorio local y debe existir " +
+                     "en el servidor remoto. \n\n";
+
+        String bor = "bor : \n" +
+                     "Borra un archivo del servidor local, el archivo " +
+                     "debe existir en el servidor remoto y pertenecer " +
+                     "al cliente. \n\n";
+
+        String info = "info : \n" +
+                      "Muestra informacion sobre los comandos disponibles " +
+                      "para el cliente. \n\n";
+        
+        String sal = "sal : \n" +
+                     "Termina la ejecucion del cliente. \n\n";
+
+
+        //Elaborar un string con los comandos.
+        comandos = rls + lls + sub + baj + bor + info + sal;
+
+        return comandos;
+
+    }
+
+
+    /* Funcion que comprueba si el archivo suministrado
+     * se encuentra en el directorio actual
+     * @param nombreArchivo el nombre del archivo a comprobar
+     * @return True si encuentra el archivo
+     */
+    public static boolean comprobarArchivo(String nombreArchivo) {
+        
+        // Abrir el directorio del cliente
+        File cwd = new File(cwdPath);
+
+        // Obtener los archivos
+        File[] listaArchivos = cwd.listFiles();
+        String actual = null;    
+
+        int i;
+        for (i=0; i<listaArchivos.length; i++) {
+            
+            actual = listaArchivos[i].getName();
+            
+            // Si el archivo existe, retornar busqueda exitosa
+            if (actual.equals(nombreArchivo)) {
+                return true;
+            }
+            
+        }
+    
+        return false;
+    }
+
+
+    /* Funcion que transforma el archivo suministrado en
+     * un arreglo de bytes para transferir al servidor de archivos
+     * @param nombreArchivo el nombre del archivo a comprobar
+     * @return True si encuentra el archivo
+     */
+
+    public static byte[] formatearArchivo(String nombreArchivo) {
+        
+        try {
+
+            // Crear un arreglo de bytes con el tamaño del archivo
+            File archivo = new File(nombreArchivo);
+            byte buffer[] = new byte[(int)archivo.length()];
+            BufferedInputStream input =
+                new BufferedInputStream(new FileInputStream(nombreArchivo));
+            input.read(buffer, 0, buffer.length);
+            input.close();
+            return(buffer);
+        } catch (Exception e) {
+            String error = "- Error - Problema al transformar el archivo " +
+                           "en un arreglo de bytes";
+            System.out.print(error);
+            return(null);
+        }
+
+    }   
+
+    /* Funcion que transforma el arreglo de bytes en un archivo
+     * con el nombre suministrado
+     * @param buffer El arreglo de bytes del archivo
+     * @param nombreArchivo El nombre del archivo a crear
+     * @return Mensaje de exito o fracaso.
+     */
+
+    public static String construirArchivo(String nombreArchivo, byte[] buffer) {
+        
+        try {
+            FileOutputStream out = new FileOutputStream(nombreArchivo);
+            out.write(buffer);
+            out.close();
+            return "Archivo " + nombreArchivo + " bajado exitosamente.";
+        } catch (Exception e) {
+            return "- ALERT - Ocurrio un error al construir el archivo.";
+        }        
+
+    } 
 
 	public static void servidorArchivos(int puerto) {
 
@@ -279,6 +506,7 @@ public class c_rmifs {
 
         if ((servidor == null) || (puerto == -1)) {
             System.out.println("Error, especifique el puerto y el servidor");
+            System.out.println("Sintaxis: java c_rmifs [-f usuarios] -p puerto -m servidor [-c comandos]");
             System.exit(EXIT_FAILURE);
         }
 

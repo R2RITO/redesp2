@@ -123,6 +123,10 @@ public class      s_rmifs_Implementation
             FileOutputStream out = new FileOutputStream(filename);        
             out.write(data);
             out.close();
+
+            // Agregar el archivo con su dueño a la lista.
+            sFiles.add(new Archivo(filename, user));
+            
         } catch (Exception e) {
             return "- ALERT - Ocurrio un error al subir el archivo.";
         }
@@ -194,6 +198,8 @@ public class      s_rmifs_Implementation
             sFiles.remove(file);
             File fileToErase = new File(filename);
             fileToErase.delete();
+
+            sFiles.remove(file);
             return "- ALERT - El archivo "+filename+
                    " se ha eliminado con exito.";
         

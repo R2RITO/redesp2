@@ -71,9 +71,8 @@ public class a_rmifs {
 
 
         if ((puerto == -1) || (archivo == null)) {
-            System.out.println(puerto);
-            System.out.println(archivo);
             System.out.println("Error, especifique el puerto y el archivo");
+            System.out.println("Sintaxis: java a_rmifs -f usuarios -p puerto");
             System.exit(EXIT_FAILURE);
         }
 

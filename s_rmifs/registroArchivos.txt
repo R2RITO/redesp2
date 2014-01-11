@@ -1,0 +1,17 @@
+s_rmifs_Implementation.java:SYSTEM
+.s_rmifs_Implementation.java.swp:SYSTEM
+.s_rmifs.java.swp:SYSTEM
+s_rmifs.java:SYSTEM
+.s_rmifs_Interface.java.swp:SYSTEM
+Archivo.class:SYSTEM
+s_rmifs.class:SYSTEM
+s_rmifs_Interface.class:SYSTEM
+s_rmifs$s_rmifs_thread.class:SYSTEM
+Archivo.java:SYSTEM
+registroArchivos.txt:SYSTEM
+s_rmifs_Interface.java:SYSTEM
+pruebaCliente.class:SYSTEM
+Bajarrrr.txt:SYSTEM
+pruebaCliente.java:SYSTEM
+s_rmifs_Implementation.class:SYSTEM
+PruebaSubida.txt:Samantha

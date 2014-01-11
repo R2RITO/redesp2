@@ -170,6 +170,39 @@ public class s_rmifs {
         }
     }
 
+    /* Metodo para escribir la lista de archivos y sus duenos al
+     * archivo de registro
+     */
+
+    public static void escribirArchivoRegistro() {
+        
+        try {
+              
+            File file = new File(cwfName);
+ 
+            file.createNewFile();
+ 
+            FileWriter fw = new FileWriter(file.getAbsoluteFile());
+            BufferedWriter bw = new BufferedWriter(fw);
+            
+            int i;
+            String actual;
+
+            for (i=0; i<sFiles.size(); i++) {
+                actual = sFiles.get(i).toFileLine();
+                bw.write(actual);
+                bw.newLine();
+            }
+
+            bw.close();
+ 
+ 
+        } catch (IOException e) {
+            System.out.println("Error al escribir el archivo de registro");
+            e.printStackTrace();
+        }
+    }
+
     /* PROGRAMA PRINCIPAL */
 
     public static void main(String args[]) {
@@ -260,6 +293,9 @@ public class s_rmifs {
             } else if (comando.equalsIgnoreCase("sal")) {
 
                 servidorActivo = false;
+
+                // Guardar los cambios a los archivos en el registro
+                escribirArchivoRegistro();                
                 System.exit(1); // ESTO HAY Q CAMBIARLO
 
             } else {
