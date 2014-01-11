@@ -95,7 +95,9 @@ public class      s_rmifs_Implementation
     throws java.rmi.RemoteException {
         
         //Actualizamos el log.
-        actualizarLog(user, "Ejecuto el comando rls");
+        String infoComando = "Ejecuto el comando rls que lista los archivos " +
+                             "en el servidor remoto";
+        actualizarLog(user, infoComando);
 
         String result = "";
         for (int i=0; i<sFiles.size(); i++) {
@@ -117,7 +119,9 @@ public class      s_rmifs_Implementation
     throws java.rmi.RemoteException {
 
         //Actualizamos el log.
-        actualizarLog(user, "Ejecuto el comando sub");
+        String infoComando = "Ejecuto el comando sub que sube un archivo " +
+                             "al servidor remoto";
+        actualizarLog(user, infoComando);
 
         for (int i=0; i<sFiles.size(); i++) {
             if (sFiles.get(i).equalsFilename(filename)) {
@@ -155,7 +159,9 @@ public class      s_rmifs_Implementation
     throws java.rmi.RemoteException {
 
         //Actualizamos el log.
-        actualizarLog(user, "Ejecuto el comando baj");
+        String infoComando = "Ejecuto el comando baj que descarga un " +
+                             "archivo del servidor remoto";
+        actualizarLog(user, infoComando);
 
         int i;
 
@@ -196,7 +202,10 @@ public class      s_rmifs_Implementation
     throws java.rmi.RemoteException {
 
         //Actualizamos el log.
-        actualizarLog(user, "Ejecuto el comando bor");
+
+        String infoComando = "Ejecuto el comando bor que borra un archivo " +
+                             "del servidor remoto que pertenezca al usuario";
+        actualizarLog(user, infoComando);
 
 
         Archivo file = new Archivo(filename, user);
@@ -226,7 +235,10 @@ public class      s_rmifs_Implementation
     throws java.rmi.RemoteException {
         
         //Actualizamos el log.
-        actualizarLog(user, "Ejecuto el comando sal");
+
+        String infoComando = "Ejecuto el comando sal que termina la " +
+                             "ejecucion del cliente";
+        actualizarLog(user, infoComando);
 
     }
 
@@ -259,10 +271,6 @@ public class      s_rmifs_Implementation
             System.out.println();
             System.out.println("NotBoundException");
             System.out.println(nbe);
-            System.out.println("Nombre : " + nombre);
-            System.out.println("Clave : " + clave);
-            System.out.println("Clave : " + servidorAuth);
-            System.out.println("Clave : " + puertoAuth);
         }
 
         return false;
