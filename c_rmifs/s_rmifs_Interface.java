@@ -1,7 +1,7 @@
 import java.io.File;
 import java.io.InputStream;
 
-/*
+/**
  * La interfaz s_rmifs_Interface contiene las firmas de las
  * funciones que seran implementadas para el servidor de
  * archivos s_rmifs.
@@ -12,9 +12,9 @@ import java.io.InputStream;
 public interface s_rmifs_Interface extends java.rmi.Remote {
 
 
-    /*
+    /**
      * Funcion que lista todos los archivos contenidos en el servidor
-     * de archivos. Es decir, lista los archivos remotos.
+     * de archivos; Es decir, lista los archivos remotos.
      * @param user Es el ID del usuario
      * @param password Es la clave del usuario user
      * @return Un string con la lista de archivos remotos
@@ -23,7 +23,7 @@ public interface s_rmifs_Interface extends java.rmi.Remote {
     throws java.rmi.RemoteException;
 
 
-    /*
+    /**
      * Funcion que sube un archivo al servidor de archivos.
      * @param user Es el ID del usuario
      * @param password Es la clave del usuario user
@@ -35,7 +35,7 @@ public interface s_rmifs_Interface extends java.rmi.Remote {
     throws java.rmi.RemoteException;
 
 
-    /*
+    /**
      * Funcion que baja un archivo del servidor de archivos.
      * @param user Es el ID del usuario
      * @param password Es la clave del usuario user
@@ -47,7 +47,7 @@ public interface s_rmifs_Interface extends java.rmi.Remote {
     throws java.rmi.RemoteException;
 
 
-    /*
+    /**
      * Funcion que borra un archivo del servidor de archivos.
      * @param user Es el ID del usuario
      * @param password Es la clave del usuario user
@@ -58,7 +58,7 @@ public interface s_rmifs_Interface extends java.rmi.Remote {
     throws java.rmi.RemoteException;
 
 
-    /*
+    /**
      * Funcion que avisa que un usuario dejo de usar el servidor
      * @param user Es el ID del usuario
      * @param password Es la clave del usuario user
@@ -66,21 +66,20 @@ public interface s_rmifs_Interface extends java.rmi.Remote {
     public void sal(String user, String password) 
     throws java.rmi.RemoteException;
 
-    /*
+    /**
      * Procedimiento que imprime la lista de logs.
      */
     public String imprimirLog()
     throws java.rmi.RemoteException;
 
 
-    /* Metodo para autenticar un usuario
+    /**
+     * Metodo para autenticar un usuario
      * @param nombre El nombre del usuario
      * @param clave La clave del usuario
      * @return El resultado de la autenticacion, true si fue exitosa.
      */
-
     public Boolean autenticar(String nombre, String clave)
     throws java.rmi.RemoteException;
-
 
 }

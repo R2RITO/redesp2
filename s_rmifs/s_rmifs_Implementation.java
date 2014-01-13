@@ -5,9 +5,9 @@ import java.net.MalformedURLException;
 import java.rmi.server.UnicastRemoteObject;
 
 
-/*
+/**
  * Aqui se contienen las implementaciones de los metodos
- * especificados en la interfaz s_rmifs_Interface. Estos
+ * especificados en la interfaz s_rmifs_Interface; Estos
  * representan las funciones del servidor de archivo.
  *
  * @author Arturo Voltattorni
@@ -20,7 +20,8 @@ public class      s_rmifs_Implementation
 
     public static final long serialVersionUID = 1L;
 
-    /* Lista de archivos manejados por el servidor de archivos
+    /*
+     * Lista de archivos manejados por el servidor de archivos
      * Con esta lista se realizaran todas las verificaciones
      * dinamicas y se manejara el archivo de registro.
      */
@@ -35,7 +36,7 @@ public class      s_rmifs_Implementation
     /* Lista que representa al log */
     private static ArrayList<String> log;
 
-    /*
+    /**
      * Constructor para la clase s_rmifs_Implementation
      * @param sFiles La lista de archivos que posee el servidor de archivos
      */
@@ -52,7 +53,7 @@ public class      s_rmifs_Implementation
     }
 
 
-    /*
+    /**
      * Funcion que actualiza el log.
      * @param user Es el ID del usuario que ejecuto el comando
      * @param msg Contiene la informacion del comando que ejecuto.
@@ -67,7 +68,7 @@ public class      s_rmifs_Implementation
         }
     }
 
-    /*
+    /**
      * Procedimiento que retorna un String con la lista de logs.
      */
     public String imprimirLog() throws java.rmi.RemoteException {
@@ -84,7 +85,7 @@ public class      s_rmifs_Implementation
         return result;
     }
 
-    /*
+    /**
      * Funcion que lista todos los archivos contenidos en el servidor
      * de archivos. Es decir, lista los archivos remotos.
      * @param user Es el ID del usuario
@@ -107,7 +108,7 @@ public class      s_rmifs_Implementation
     }
 
 
-    /*
+    /**
      * Funcion que sube un archivo al servidor de archivos.
      * @param user Es el ID del usuario
      * @param password Es la clave del usuario user
@@ -147,7 +148,7 @@ public class      s_rmifs_Implementation
     }
 
 
-    /*
+    /**
      * Funcion que baja un archivo del servidor de archivos.
      * @param user Es el ID del usuario
      * @param password Es la clave del usuario user
@@ -191,7 +192,7 @@ public class      s_rmifs_Implementation
     }
 
 
-    /*
+    /**
      * Funcion que borra un archivo del servidor de archivos.
      * @param user Es el ID del usuario
      * @param password Es la clave del usuario user
@@ -226,7 +227,7 @@ public class      s_rmifs_Implementation
         }        
     }
 
-    /*
+    /**
      * Funcion que avisa que un usuario dejo de usar el servidor
      * @param user Es el ID del usuario
      * @param password Es la clave del usuario user
@@ -242,12 +243,12 @@ public class      s_rmifs_Implementation
 
     }
 
-    /* Metodo para autenticar un usuario
+    /**
+     * Metodo para autenticar un usuario
      * @param nombre El nombre del usuario
      * @param clave La clave del usuario
      * @return El resultado de la autenticacion, true si fue exitosa.
      */
-
     public Boolean autenticar(String nombre, String clave)
     throws java.rmi.RemoteException {
         
@@ -274,8 +275,6 @@ public class      s_rmifs_Implementation
         }
 
         return false;
-
     }
-
 }
 

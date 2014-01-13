@@ -5,6 +5,13 @@ import java.rmi.NotBoundException;
 import java.util.*;
 import java.io.*;
 
+/**
+ * c_rmifs.java
+ * Clase que implementa al Cliente.
+ * 
+ * @author Fernando D'Agostino
+ * @author Arturo Voltattorni
+ */
 public class c_rmifs {
 
     /* Constante para salir del programa por error */
@@ -32,7 +39,8 @@ public class c_rmifs {
     private static String comandos = null;
 
 
-    /* Metodo que verifica los argumentos pasados al programa
+    /** 
+     * Metodo que verifica los argumentos pasados al programa
      * @param indice Indice del arreglo de argumentos
      * @param longitud Longitud del arreglo de argumentos
      * @param args Arreglo de argumentos
@@ -47,7 +55,8 @@ public class c_rmifs {
 
     }
 
-    /* Funcion que lee el archivo de usuarios y
+    /** 
+     * Funcion que lee el archivo de usuarios y
      * los inserta en una lista
      * @param archivoUsu el nombre del archivo a leer
      * @return retorna la lista con los usuarios del archivo
@@ -73,13 +82,11 @@ public class c_rmifs {
                tokens = linea.split(":");
                usr = new Usuario(tokens[0],tokens[1]);
                usuarios.add(usr);
-
            }
             
            //Excepciones
         } catch (FileNotFoundException e) {
-                //e.printStackTrace();
-           System.out.println("Error, archivo no encontrado");
+           System.out.println("- ERROR - Archivo no encontrado.");
         } catch (IOException e) {
            e.printStackTrace();
         } finally {
@@ -95,7 +102,8 @@ public class c_rmifs {
 
     }
 
-    /* Funcion que solicita al usuario los datos para
+    /** 
+     * Funcion que solicita al usuario los datos para
      * autenticarse por pantalla
      * @return La lista con el usuario insertado por pantalla
      */
@@ -129,13 +137,13 @@ public class c_rmifs {
     }
     
 
-    /* Funcion que utiliza el servidor de autenticacion
-    *  para autenticar a los usuarios provistos
-    *  @param usuarios Lista con los usuarios a autenticar
-    *  @param puerto El puerto para conectarse al servidor de autenticacion
-    *  @return Booleano que indica si se pudo autenticar.
-    */
-
+    /**
+     * Funcion que utiliza el servidor de autenticacion
+     * para autenticar a los usuarios provistos
+     * @param usuarios Lista con los usuarios a autenticar
+     * @param puerto El puerto para conectarse al servidor de autenticacion
+     * @return Booleano que indica si se pudo autenticar.
+     */
     public static boolean autenticarCliente(ArrayList<Usuario> usuarios, int puerto) {
 
         //Acceder al servidor remoto de autenticacion
@@ -185,6 +193,13 @@ public class c_rmifs {
 
     }
 
+
+    /**
+     * Funcion que ejecuta los comandos en el archivo provisto por el
+     * usuario
+     * @param fs Es el objeto a utilizar para ejecutar los comandos
+     * @param filename Es el nombre del archivo donde estan los comandos1
+     */
     public static void ejecutarComandosArchivo(s_rmifs_Interface fs, String filename) {
 
         if (filename != null) {
@@ -220,7 +235,11 @@ public class c_rmifs {
         }
     }
 
-    
+    /**
+     * Funcion que ejecuta los comandos ejecutados por el usuario
+     * @param fs Es el objeto a utilizar para ejecutar los comandos
+     * @param lineacomando Es el string/comando introducido por el usuario
+     */
     public static void ejecutarComando(s_rmifs_Interface fs, String lineacomando) {
         
         String[] ordenes;
@@ -325,7 +344,13 @@ public class c_rmifs {
         }
     }
 
-
+    /**
+     * Funcion que ejecuta llama a ejecutarComandosArchivo para procesar
+     * los comandos provistos por el archivo de comandos, luego, lee
+     * comandos de la consola y los pasa a ejecutarComando.
+     * @param fs Es el objeto a utilizar para ejecutar los comandos
+     * @param comandos Es el nombre del archivo donde estan los comandos
+     */
 	public static void escucharCliente(s_rmifs_Interface fs, String comandos) {
 
         // Se ejecutan los comandos del archivo, si es que los hay.
@@ -353,12 +378,13 @@ public class c_rmifs {
         }
 	}
 
-    /* Funcion que lista los archivos locales del cliente
-    *  @param nombre El nombre del usuario
-    *  @param clave La clave del usuario
-    *  Ambos parametros se solicitan por estandarizacion, no son utilizados.
-    *  @return El string con los archivos locales.
-    */
+    /**
+     * Funcion que lista los archivos locales del cliente
+     * @param nombre El nombre del usuario
+     * @param clave La clave del usuario
+     * Ambos parametros se solicitan por estandarizacion, no son utilizados.
+     * @return El string con los archivos locales.
+     */
     public static String lls(String nombre, String clave) {
 
         // Abrir el directorio del cliente
@@ -378,12 +404,13 @@ public class c_rmifs {
         return archivos;
     }
 
-    /* Funcion que lista los comandos disponibles al cliente
-    *  @param nombre El nombre del usuario
-    *  @param clave La clave del usuario
-    *  Ambos parametros se solicitan por estandarizacion, no son utilizados.
-    *  @return El string con los comandos disponibles
-    */
+    /**
+     * Funcion que lista los comandos disponibles al cliente
+     * @param nombre El nombre del usuario
+     * @param clave La clave del usuario
+     * Ambos parametros se solicitan por estandarizacion, no son utilizados.
+     * @return El string con los comandos disponibles
+     */
     public static String info(String nombre, String clave) {
 
         String comandos = "";
@@ -429,7 +456,8 @@ public class c_rmifs {
     }
 
 
-    /* Funcion que comprueba si el archivo suministrado
+    /**
+     * Funcion que comprueba si el archivo suministrado
      * se encuentra en el directorio actual
      * @param nombreArchivo el nombre del archivo a comprobar
      * @return True si encuentra el archivo
@@ -459,12 +487,12 @@ public class c_rmifs {
     }
 
 
-    /* Funcion que transforma el archivo suministrado en
+    /**
+     * Funcion que transforma el archivo suministrado en
      * un arreglo de bytes para transferir al servidor de archivos
      * @param nombreArchivo el nombre del archivo a comprobar
      * @return True si encuentra el archivo
      */
-
     public static byte[] formatearArchivo(String nombreArchivo) {
         
         try {
@@ -486,7 +514,8 @@ public class c_rmifs {
 
     }   
 
-    /* Funcion que transforma el arreglo de bytes en un archivo
+    /**
+     * Funcion que transforma el arreglo de bytes en un archivo
      * con el nombre suministrado
      * @param buffer El arreglo de bytes del archivo
      * @param nombreArchivo El nombre del archivo a crear
@@ -506,6 +535,14 @@ public class c_rmifs {
 
     } 
 
+
+    /**
+     * Funcion que ejecuta los comandos en el archivo provisto por el
+     * usuario
+     * @param puerto Es el puerto por donde contactar al servidor de archivos
+     * @param comandos Es el nombre de archivos de comandos provisto por el usuario
+     * @param hostname Es el hostname en donde se encuentra el servidor de archivos
+     */
 	public static void servidorArchivos(int puerto, String comandos, String hostname) {
 
 		try {

@@ -1,6 +1,6 @@
-/*
+/**
  * Clase Archivo disenada para empaquetar un archivo
- * especifico con su dueno correspondiente. De gran
+ * especifico con su dueno correspondiente; De gran
  * utilidad para realizar listas de los archivos con
  * sus duenos.
  *
@@ -12,7 +12,7 @@ public class Archivo {
     private String filename;
     private String dueno;
 
-    /*
+    /**
      * Constructor de la clase Archivo
      * @param filename Es el nombre del archivo
      * @param dueno Es el dueno del archivo
@@ -23,7 +23,7 @@ public class Archivo {
         this.dueno    = dueno;
     }
 
-    /*
+    /**
      * Verifica si un archivo es igual a this
      * @param o Es el objeto con el cual comparar
      * @return True si ambos objetos son iguales en contenido
@@ -40,7 +40,7 @@ public class Archivo {
 
     }
 
-    /*
+    /**
      * Verifica si this tiene por nombre el string filename
      * @param filename Es el string con el cual comparar
      * @return True si this tiene como nombre el string filename
@@ -49,7 +49,7 @@ public class Archivo {
         return this.filename.equals(filename);
     }
 
-    /*
+    /**
      * Retorna el nombre del archivo
      * @return El nombre del archivo
      */
@@ -58,7 +58,7 @@ public class Archivo {
 
     }
 
-    /*
+    /**
      * Retorna el dueno del archivo
      * @return El dueno del archivo
      */
@@ -66,7 +66,7 @@ public class Archivo {
         return this.dueno;
     }
 
-    /*
+    /**
      * Implementacion de toString para un archivo
      * @return El string que representa a un archivo y su dueno.
      */
@@ -74,7 +74,8 @@ public class Archivo {
         return "Archivo: "+this.filename+", Dueno: "+this.dueno;
     }
 
-    /* Metodo para generar un string con el nombre del archivo
+    /**
+     * Metodo para generar un string con el nombre del archivo
      * y el dueño separados por el caracter ":"
      * @return El string con el nombre y el dueño
      */

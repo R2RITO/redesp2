@@ -4,16 +4,24 @@ import java.rmi.registry.LocateRegistry;
 import java.util.*;
 import java.io.*;
 
+/**
+ * a_rmifs.java
+ * Clase que implementa al Servidor de Autenticacion.
+ * 
+ * @author Fernando D'Agostino
+ * @author Arturo Voltattorni
+ */
 public class a_rmifs {
 
     //Constantes
     private static final int EXIT_FAILURE = -1;
 
-    /* Metodo que crea el objeto a ofrecer remotamente
+    /**
+     * Metodo que crea el objeto a ofrecer remotamente
      * y lo registra.
      * @param usuarios Lista de usuarios validos
      * @param puertoEspecifico el puerto en el que se ofrecera el servicio.
-    */
+     */
     public a_rmifs(ArrayList<Usuario> usuarios, int puertoEspecifico) {
 
         try {
@@ -28,13 +36,13 @@ public class a_rmifs {
 
     }
 
-    /* Metodo que verifica los argumentos pasados al programa
+    /**
+     * Metodo que verifica los argumentos pasados al programa
      * @param indice Indice del arreglo de argumentos
      * @param longitud Longitud del arreglo de argumentos
      * @param args Arreglo de argumentos
      * @param listaFlags lista con los flags validos
      */
-
     private static void verificarArg(int indice, int longitud, String[] args, ArrayList<String> listaFlags) {
 
         if ((indice+1 == longitud) || listaFlags.contains(args[indice+1])) {
@@ -49,6 +57,7 @@ public class a_rmifs {
 
 
         //Definicion de constantes y listas
+
         int puerto = -1;
         ArrayList<String> listaFlags = new ArrayList<String>();
         listaFlags.add("-p");
@@ -81,7 +90,6 @@ public class a_rmifs {
         }
 
 
-
         //Apertura del archivo de usuarios y lectura
 
         File archivoUsuarios = new File(archivo);
@@ -105,8 +113,7 @@ public class a_rmifs {
             }
                 
         } catch (FileNotFoundException e) {
-             //e.printStackTrace();
-             System.out.println("Error, archivo no encontrado");
+             System.out.println("- ERROR - Archivo no encontrado");
         } catch (IOException e) {
              e.printStackTrace();
         } finally {
@@ -115,11 +122,14 @@ public class a_rmifs {
                     lector.close();
                 }
             } catch (IOException e) {
+                System.out.println("- ERROR - Problema al cerrar descriptor");
             }
         }
 
         System.out.println(" - Servidor de Autenticacion: Listo - ");
-        //Correr el servidor
+
+        // Ejecutar el servidor
+
         new a_rmifs(usuarios,puerto);
     }
 

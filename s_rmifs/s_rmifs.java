@@ -4,8 +4,8 @@ import java.rmi.registry.LocateRegistry;
 import java.util.*;
 import java.io.*;
 
-/*
- * Este es el servidor de archivos. Aqui se realizan
+/**
+ * Este es el servidor de archivos; Aqui se realizan
  * las lecturas de archivos y verificaciones pertinentes
  * Asimismo, aqui es donde se inicia el servidor.
  *
@@ -54,7 +54,8 @@ public class s_rmifs {
     /* METODOS PARA EL MAIN DEL SERVIDOR DE ARCHIVOS */
 
 
-    /* Metodo que verifica los argumentos pasados al programa
+    /**
+     * Metodo que verifica los argumentos pasados al programa
      * @param indice Indice del arreglo de argumentos
      * @param longitud Longitud del arreglo de argumentos
      * @param args Arreglo de argumentos
@@ -70,10 +71,10 @@ public class s_rmifs {
     }
     
 
-    /*
+    /**
      * Constructor para el servidor de archivos
      * @param sFiles Es la lista de archivos disponibles en el servidor.
-     * En este punto, esta lista ya se encuentra verificada y contiene
+     * Para esta funcion, esta lista ya se encuentra verificada y contiene
      * un snapshot del ultimo estado del servidor de archivos.
      * @param puertoEspecifico Es el puerto por donde se asociara
      * al objeto remoto.
@@ -91,9 +92,9 @@ public class s_rmifs {
     }
 
 
-    /*
+    /**
      * Procedimiento que lee el archivo de propietarios de archivos
-     * y los coloca en la lista de archivos global 'sFiles'.
+     * y los coloca en la lista de archivos global 'sFiles';
      * Al terminar la ejecucion, sFiles debera contener una lista
      * de todos los archivos de los usuarios, cada archivo con
      * su respectivo dueno.
@@ -120,12 +121,12 @@ public class s_rmifs {
     }
 
 
-    /*
+    /**
      * Procedimiento que agrega los demas archivos que se encuentran
      * en el directorio en donde se ejecuta el servidor, pero que no
-     * son propiedad de usuario alguno. Es decir, son archivos que
+     * son propiedad de usuario alguno; Es decir, son archivos que
      * le pertenecen al sistema y que no pueden ser modificados o
-     * eliminados.
+     * eliminados,
      * Al terminar su ejecucion, la lista sFiles debera ser la misma
      * lista anterior mas los archivos que corresponden al sistema
      * que se encuentren en la carpeta donde se ejecuto el servidor.
@@ -161,10 +162,10 @@ public class s_rmifs {
     }
 
 
-    /*
+    /**
      * Procedimiento que verifica que todos los archivos que se
      * encuentran en la lista realmente estan en el directorio
-     * en donde se ejecuto el servidor. Es decir, verifica que
+     * en donde se ejecuto el servidor; Es decir, verifica que
      * el contenido del archivo de texto se corresponda con los
      * archivos en el directorio de ejecucion.
      * @param cwd Es el archivo que corresponde al directorio de ejecucion
@@ -190,10 +191,10 @@ public class s_rmifs {
         }
     }
 
-    /* Metodo para escribir la lista de archivos y sus duenos al
+    /**
+     * Metodo para escribir la lista de archivos y sus duenos al
      * archivo de registro
      */
-
     public static void escribirArchivoRegistro() {
         
         try {
@@ -259,7 +260,7 @@ public class s_rmifs {
 
         }
 
-
+        // Verificamos que el usuario especifico los parametros obligatorios
         if ((puerto == null) || (host == null) || (puertolocal == null)) {
             System.out.println("- ERROR - Problema de sintaxis al ejecutar.");
             System.out.println("Sintaxis: java s_rmifs -l puertolocal -h host -p puerto");
@@ -283,7 +284,6 @@ public class s_rmifs {
             File cwd = new File(cwdPath);
             verificarArchivosListados(cwd);
             agregarArchivoSistema(cwd);
-
 
             //cwd.close();
 
@@ -350,10 +350,9 @@ public class s_rmifs {
             } else if (comando.equalsIgnoreCase("sal")) {
 
                 servidorActivo = false;
-
                 // Guardar los cambios a los archivos en el registro
                 escribirArchivoRegistro();                
-                System.exit(1); // ESTO HAY Q CAMBIARLO
+                System.exit(1);
 
             } else {
 
