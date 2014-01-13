@@ -1,3 +1,4 @@
+#Makefile principal, compila cada modulo por separado
 all:
 	cd a_rmifs; make
 	cd s_rmifs; make
