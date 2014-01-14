@@ -1,0 +1,82 @@
+La entrega de nuestro proyecto dispone de un directorio raiz que contiene en su 
+interior tres directorios (cada uno para el servidor de autenticacion, 
+el de archivos y el cliente), contiene ademas un archivo Makefile y 
+este archivo de texto.
+
+En el directorio a_rmifs se encuentra todo lo relacionado con el servidor de 
+autenticacion. Asimismo, se cuenta con un Makefile particular para el servidor 
+de autenticacion. Esto mismo aplica para el servidor de archivos (s_rmifs) y 
+para el cliente (c_rmifs).
+
+Para la compilacion del proyecto se tienen varias opciones. Se puede utilizar 
+el Makefile del directorio raiz para compilar los tres directorios directamente. 
+Si lo que se desea es compilar solo uno de los tres directorios, 
+se puede utilizar el Makefile dentro de la carpeta correspondiente.
+
+
+Servidor de autenticación:
+
+El servidor de autenticación ofrece un método para autenticar a un usuario
+(nombre,clave) que se le suministre, comparando con el archivo de usuarios
+provisto al inicio de su ejecución.
+
+
+Cliente:
+
+El cliente debe autenticarse antes de poder acceder a los comandos, si no se
+suministra un archivo, se le pedirá al usuario que inserte los datos por
+pantalla, si no se logra autenticar (por cualquier método, archivo o pantalla),
+se terminará la ejecución.
+
+Cuando se suministra un archivo con usuarios/claves al ejecutar el cliente,
+se procede a autenticar hasta que se encuentre el primer cliente con datos
+válidos, entonces este pasará a ser el cliente autenticado.
+
+Si se logra autenticar, el cliente dispondrá de los comandos para utilizar
+el servidor de archivos sin necesidad de autenticarse por cada comando que
+utilice.
+
+El cliente dispone de comandos locales y remotos, los comandos lls y sal son
+locales (no necesitan del servidor de archivos) y por lo tanto no aparecerán
+en el log del servidor.
+
+El resto de los comandos son remotos y por lo tanto aparecerán en el log
+del servidor de archivos.
+
+El comando lls lista solamente los archivos que están en el directorio
+actual (.), no busca recursivamente en los subdirectorios que existan.
+
+Los mensajes de error tratan de dar información acerca del error encontrado,
+sin embargo se limitan a imprimir el error y continuar la ejecución si es
+posible.
+
+Un cliente no puede subir un archivo que ya exista, incluso si dicho archivo
+tiene otro dueño.
+
+Los clientes pueden bajar cualquier archivo que exista en el servidor, pero
+sólo pueden borrar aquellos que les pertenezcan.
+
+
+Servidor:
+
+El servidor de archivos es quien se comunica con el servidor de autenticación,
+a fin de autenticar a los clientes que intentan acceder a los comandos
+remotos. Además, mantiene una lista con los usuarios que están
+autenticados, y la utiliza para verificar con los comandos.
+
+El servidor maneja una lista con los archivos que existen en el directorio
+raiz, que contiene el nombre del archivo y su dueño, los archivos que no
+tengan como dueño un cliente tendrán a SYSTEM. Este archivo se conserva entre
+invocaciones del servidor, se lee al inicio de la ejecución y se almacena su
+contenido en la lista, y al terminar la ejecución se sobreescribe el archivo.
+
+El servidor no maneja la señal CTRL-C por lo que es obligatoria su terminación
+mediante el comando sal.
+
+El log de comandos que maneja el servidor sólo es válido durante la ejecución
+actual, no se conserva entre distintas invocaciones.
+
+Al terminar la ejecución del servidor, no se le informa a los clientes, se
+deja esto para el manejo de excepciones que poseen los clientes.
+
+
