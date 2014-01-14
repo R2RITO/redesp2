@@ -225,6 +225,18 @@ public class s_rmifs {
         }
     }
 
+
+    /**
+     * Funcion para finalizar la ejecucion del servidor de archivos
+     * de manera segura; Esta bloquea para que no se pueda finalizar
+     * el servidor mientras se sube un archivo o viceversa.
+     *
+     */
+    public static synchronized void finalizarServer() {
+        escribirArchivoRegistro();
+        System.exit(1);
+    }
+
     /* PROGRAMA PRINCIPAL */
 
     public static void main(String args[]) {
@@ -350,8 +362,8 @@ public class s_rmifs {
 
                 servidorActivo = false;
                 // Guardar los cambios a los archivos en el registro
-                escribirArchivoRegistro();                
-                System.exit(1);
+                // y finalizar el servidor de archivos
+                finalizarServer();
 
             } else {
 
