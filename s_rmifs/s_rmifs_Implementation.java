@@ -58,7 +58,7 @@ public class      s_rmifs_Implementation
      * @param user Es el ID del usuario que ejecuto el comando
      * @param msg Contiene la informacion del comando que ejecuto.
      */
-    public static void actualizarLog(String user, String msg) {
+    public void actualizarLog(String user, String msg) {
 
         if (log.size() < 20) {
             log.add(user+": "+msg);
@@ -71,7 +71,8 @@ public class      s_rmifs_Implementation
     /**
      * Procedimiento que retorna un String con la lista de logs.
      */
-    public String imprimirLog() throws java.rmi.RemoteException {
+    public String imprimirLog() 
+    throws java.rmi.RemoteException {
 
         if (log.size() == 0) {
              return " - El log esta vacio - ";
@@ -92,7 +93,7 @@ public class      s_rmifs_Implementation
      * @param password Es la clave del usuario user
      * @return Un string con la lista de archivos remotos
      */
-    public String rls(String user, String password) 
+    public synchronized String rls(String user, String password) 
     throws java.rmi.RemoteException {
         
         //Actualizamos el log.
@@ -101,6 +102,7 @@ public class      s_rmifs_Implementation
         actualizarLog(user, infoComando);
 
         String result = "";
+
         for (int i=0; i<sFiles.size(); i++) {
             result += i+". "+sFiles.get(i).toString()+"\n\n";
         }
@@ -116,7 +118,10 @@ public class      s_rmifs_Implementation
      * @param data Es el contenido del archivo que se va a subir
      * @return Un string con un mensaje de exito o fracaso.
      */
-    public String sub(String user, String password, String filename, byte[] data) 
+    public synchronized String sub(String user, 
+                                    String password, 
+                                    String filename, 
+                                    byte[] data) 
     throws java.rmi.RemoteException {
 
         //Actualizamos el log.
@@ -124,6 +129,10 @@ public class      s_rmifs_Implementation
                              " al servidor remoto";
         actualizarLog(user, infoComando);
 
+        // Garantizamos que la lista de archivos no sea modificada
+        // mientras leemos de ella. Adicionalmente, garantizamos
+        // que no se agreguen dos archivos con el mismo nombre a 
+        // la lista de archivos.
         for (int i=0; i<sFiles.size(); i++) {
             if (sFiles.get(i).equalsFilename(filename)) {
                 return "- ALERT - El archivo especificado ya existe. \n"+
@@ -136,10 +145,9 @@ public class      s_rmifs_Implementation
             FileOutputStream out = new FileOutputStream(filename);        
             out.write(data);
             out.close();
-
             // Agregar el archivo con su dueño a la lista.
             sFiles.add(new Archivo(filename, user));
-            
+           
         } catch (Exception e) {
             return "- ALERT - Ocurrio un error al subir el archivo.";
         }
@@ -156,7 +164,7 @@ public class      s_rmifs_Implementation
      * @return Un arreglo de bytes con el contenido del archivo.
      * Si ocurre un error, retorna null.
      */
-    public byte[] baj(String user, String password, String filename) 
+    public synchronized byte[] baj(String user, String password, String filename) 
     throws java.rmi.RemoteException {
 
         //Actualizamos el log.
@@ -199,7 +207,7 @@ public class      s_rmifs_Implementation
      * @param filename Es el nombre del archivo que se desea borrar
      * @return Un string con un mensaje de exito o fracaso.
      */
-    public String bor(String user, String password, String filename) 
+    public synchronized String bor(String user, String password, String filename) 
     throws java.rmi.RemoteException {
 
         //Actualizamos el log.
@@ -232,7 +240,7 @@ public class      s_rmifs_Implementation
      * @param user Es el ID del usuario
      * @param password Es la clave del usuario user
      */
-    public void sal(String user, String password) 
+    public synchronized void sal(String user, String password) 
     throws java.rmi.RemoteException {
         
         //Actualizamos el log.
