@@ -253,94 +253,56 @@ public class c_rmifs {
             argumento = ordenes[1];
         }
 
-        // Y se identifica que comando es y que acciones tomar.
+        // Lista para verificar que se haya suministrado el archivo
+        ArrayList<String> comandosConArgumento = new ArrayList<String>();
+        comandosConArgumento.add("sub");
+        comandosConArgumento.add("baj");
+        comandosConArgumento.add("bor");
+        
+
+        // Verificar que se suministro el archivo en caso de ser necesario
+        if (comandosConArgumento.contains(comando) && argumento.equals("")) {
+
+            String archivoFaltante = "Error, por favor suministre el " +
+                                     "archivo para ejecutar el comando";
+            
+            System.out.println(archivoFaltante);
+            return;
+        }
+
+        // Identificar que comando es y que acciones tomar.
         if (comando.equalsIgnoreCase("rls")) {
-			try {
-				System.out.println(fs.rls(nombreCliente, claveCliente));
-			} catch (Exception e) {
-				System.out.println(e.getMessage());
-                System.out.println(" - ERROR - El Servidor de Archivos ya no esta disponible");
-                System.exit(EXIT_FAILURE);
-			}
+
+            rls(nombreCliente, claveCliente, fs);			
 
 		} else if (comando.equalsIgnoreCase("lls")) {
             
-            System.out.println(lls(nombreCliente,claveCliente));
+            System.out.println(lls(nombreCliente, claveCliente));
 
 		} else if (comando.equalsIgnoreCase("sub")) {
 
-            try {
-
-                //Comprobar que el archivo existe localmente
-                if (comprobarArchivo(argumento)) {                        
-                    // Ejecutar el comando
-                    byte[] archivoFormateado = formatearArchivo(argumento);
-                    if (archivoFormateado != null) {
-                        System.out.println(fs.sub(nombreCliente, claveCliente, argumento, archivoFormateado));
-                    }                        
-                    
-                } else {
-
-                    System.out.println("El archivo solicitado no existe");
-                }
-
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                System.out.println(" - ERROR - El Servidor de Archivos ya no esta disponible");
-                System.exit(EXIT_FAILURE);
-            } 
+            sub(nombreCliente, claveCliente, argumento, fs);             
 
 		} else if (comando.equalsIgnoreCase("baj")) {
-            try {
-
-                //Comprobar que el archivo no existe localmente
-                if (!comprobarArchivo(argumento)) {                        
-                    // Ejecutar el comando
-                    byte[] archivoFormateado = fs.baj(nombreCliente, claveCliente, argumento);
-                    if (archivoFormateado != null) {
-                        System.out.println(construirArchivo(argumento, archivoFormateado));
-                    } else {
-                        System.out.println("Error al construir el archivo");
-                    }
-                    
-                } else {
-
-                    System.out.println("El archivo solicitado ya existe");
-                }
-
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                System.out.println(" - ERROR - El Servidor de Archivos ya no esta disponible");
-                System.exit(EXIT_FAILURE);
-            }
+            
+            baj(nombreCliente, claveCliente, argumento, fs);
 
 		} else if (comando.equalsIgnoreCase("bor")) {
             
-            try {
-				System.out.println(fs.bor(nombreCliente, claveCliente, argumento));
-			} catch (Exception e) {
-				System.out.println(e.getMessage());
-                System.out.println(" - ERROR - El Servidor de Archivos ya no esta disponible");
-                System.exit(EXIT_FAILURE);
-			}
+            bor(nombreCliente, claveCliente, argumento, fs);
 
         } else if (comando.equalsIgnoreCase("info")) {
 
             System.out.println(info(nombreCliente, claveCliente));
 
 		} else if (comando.equalsIgnoreCase("sal")) {
-            try {
-                fs.sal(nombreCliente, claveCliente);
-                System.out.println("- ALERT - Terminando ejecucion.");
-                System.exit(1);
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                System.out.println(" - ERROR - El Servidor de Archivos ya no esta disponible");
-                System.exit(EXIT_FAILURE);
-            }
+            
+            sal(nombreCliente, claveCliente, fs);
 
         } else {
+
             System.out.println("- Error - Comando desconocido.");
+
         }
     }
 
@@ -403,6 +365,133 @@ public class c_rmifs {
         }
         return archivos;
     }
+
+
+    /**
+     * Funcion que lista los archivos en el servidor remoto
+     * @param nombre El nombre del usuario
+     * @param clave La clave del usuario
+     * @param fs La interfaz del servidor para acceder al servicio remoto
+     */
+    public static void rls(String nombre, String clave, s_rmifs_Interface fs) {
+
+        try {
+		    System.out.println(fs.rls(nombreCliente, claveCliente));
+        } catch (Exception e) {
+	        System.out.println(e.getMessage());
+            System.out.println(" - ERROR - El Servidor de Archivos ya no esta disponible");
+            System.exit(EXIT_FAILURE);
+        }
+    }
+
+
+
+    /**
+     * Funcion que sube un archivo al servidor
+     * @param nombre El nombre del usuario
+     * @param clave La clave del usuario
+     * @param argumento El nombre del archivo a subir
+     * @param fs La interfaz del servidor para acceder al servicio remoto
+     */
+    public static void sub(String nombre, String clave, String argumento, s_rmifs_Interface fs) {
+
+        try {
+
+            //Comprobar que el archivo existe localmente
+            if (comprobarArchivo(argumento)) {                        
+                // Ejecutar el comando
+                byte[] archivoFormateado = formatearArchivo(argumento);
+                if (archivoFormateado != null) {
+                    System.out.println(fs.sub(nombreCliente, claveCliente, argumento, archivoFormateado));
+                }                        
+                
+            } else {
+
+                System.out.println("El archivo solicitado no existe");
+            }
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println(" - ERROR - El Servidor de Archivos ya no esta disponible");
+            System.exit(EXIT_FAILURE);
+        }
+    }
+
+
+    /**
+     * Funcion que baja un archivo desde el servidor remoto
+     * @param nombre El nombre del usuario
+     * @param clave La clave del usuario
+     * @param argumento Nombre del archivo a bajar
+     * @param fs La interfaz del servidor para acceder al servicio remoto
+     */
+    public static void baj(String nombre, String clave, String argumento, s_rmifs_Interface fs) {
+
+        try {
+
+            //Comprobar que el archivo no existe localmente
+            if (!comprobarArchivo(argumento)) {                        
+                // Ejecutar el comando
+                byte[] archivoFormateado = fs.baj(nombreCliente, claveCliente, argumento);
+                if (archivoFormateado != null) {
+                    System.out.println(construirArchivo(argumento, archivoFormateado));
+                } else {
+                    System.out.println("Error al construir el archivo");
+                }
+                
+            } else {
+
+                System.out.println("El archivo solicitado ya existe");
+            }
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println(" - ERROR - El Servidor de Archivos ya no esta disponible");
+            System.exit(EXIT_FAILURE);
+        }
+    }
+
+
+    /**
+     * Funcion que borra un archivo desde el servidor remoto
+     * @param nombre El nombre del usuario
+     * @param clave La clave del usuario
+     * @param argumento Nombre del archivo a borrar
+     * @param fs La interfaz del servidor para acceder al servicio remoto
+     */
+    public static void bor(String nombre, String clave, String argumento, s_rmifs_Interface fs) {
+
+        try {
+		    System.out.println(fs.bor(nombreCliente, claveCliente, argumento));
+	    } catch (Exception e) {
+		    System.out.println(e.getMessage());
+            System.out.println(" - ERROR - El Servidor de Archivos ya no esta disponible");
+            System.exit(EXIT_FAILURE);
+	    }
+
+    }
+
+
+    /**
+     * Funcion que termina la ejecucion del cliente
+     * @param nombre El nombre del usuario
+     * @param clave La clave del usuario
+     * @param fs La interfaz del servidor para acceder al servicio remoto
+     */
+    public static void sal(String nombre, String clave, s_rmifs_Interface fs) {
+
+        try {
+            fs.sal(nombreCliente, claveCliente);
+            System.out.println("- ALERT - Terminando ejecucion.");
+            System.exit(1);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println(" - ERROR - El Servidor de Archivos ya no esta disponible");
+            System.exit(EXIT_FAILURE);
+        }
+
+    }
+
 
     /**
      * Funcion que lista los comandos disponibles al cliente

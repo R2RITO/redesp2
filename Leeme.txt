@@ -46,6 +46,9 @@ del servidor de archivos.
 El comando lls lista solamente los archivos que están en el directorio
 actual (.), no busca recursivamente en los subdirectorios que existan.
 
+Si se suministran argumentos a comandos que no los necesitan
+(p.e. lls archivo.txt) éstos serán ignorados.
+
 Los mensajes de error tratan de dar información acerca del error encontrado,
 sin embargo se limitan a imprimir el error y continuar la ejecución si es
 posible.

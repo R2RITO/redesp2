@@ -262,7 +262,7 @@ public class s_rmifs {
         // Verificamos que el usuario especifico los parametros obligatorios
         if ((puerto == null) || (host == null) || (puertolocal == null)) {
             System.out.println("- ERROR - Problema de sintaxis al ejecutar.");
-            System.out.println("Sintaxis: java s_rmifs -l puertolocal -h host -p puerto");
+            System.out.println("Sintaxis: java s_rmifs -l puertolocal -h host -r puerto");
             System.exit(EXIT_FAILURE);
         }
 
