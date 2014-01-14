@@ -69,7 +69,6 @@ public class s_rmifs {
         }
 
     }
-    
 
     /**
      * Constructor para el servidor de archivos

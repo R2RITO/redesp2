@@ -33,6 +33,9 @@ public class      s_rmifs_Implementation
     /* Puerto para acceder al servidor de autenticacion */
     private static String puertoAuth = null;
 
+    /* Lista de usuarios autenticados */
+    private static ArrayList<Usuario> usuarios;
+
     /* Lista que representa al log */
     private static ArrayList<String> log;
 
@@ -50,8 +53,18 @@ public class      s_rmifs_Implementation
         this.log = log;
         this.servidorAuth = servAuth;
         this.puertoAuth = puerto;
+        this.usuarios = new ArrayList<Usuario>();
     }
 
+
+    /**
+     * Metodo para verificar si un usuario esta autenticado
+     * @param user Es el nombre de usuario
+     * @param pass Es el password del usuario
+     */
+    public boolean verificarAutenticado(String user, String pass) {
+        return usuarios.contains(new Usuario(user,pass));
+    }
 
     /**
      * Funcion que actualiza el log.
@@ -83,6 +96,7 @@ public class      s_rmifs_Implementation
         for (int i=0; i<log.size(); i++) {
              result += log.get(i)+"\n";
         }
+
         return result;
     }
 
@@ -95,6 +109,11 @@ public class      s_rmifs_Implementation
      */
     public synchronized String rls(String user, String password) 
     throws java.rmi.RemoteException {
+
+        // Verificamos que el usuario este autenticado
+        if (!verificarAutenticado(user, password)) {
+            return "- ERROR - Usted no se encuentra autenticado";
+        }
         
         //Actualizamos el log.
         String infoComando = "Ejecuto el comando rls: \n\tListar los archivos " +
@@ -123,6 +142,11 @@ public class      s_rmifs_Implementation
                                     String filename, 
                                     byte[] data) 
     throws java.rmi.RemoteException {
+
+        // Verificamos que el usuario este autenticado
+        if (!verificarAutenticado(user, password)) {
+            return "- ERROR - Usted no se encuentra autenticado";
+        }
 
         //Actualizamos el log.
         String infoComando = "Ejecuto el comando sub: \n\tSubir "+filename+
@@ -167,6 +191,11 @@ public class      s_rmifs_Implementation
     public synchronized byte[] baj(String user, String password, String filename) 
     throws java.rmi.RemoteException {
 
+        // Verificamos que el usuario este autenticado
+        if (!verificarAutenticado(user, password)) {
+            return null;
+        }
+
         //Actualizamos el log.
         String infoComando = "Ejecuto el comando baj: \n\tDescargar "+filename+
                              " archivo del servidor remoto";
@@ -210,8 +239,12 @@ public class      s_rmifs_Implementation
     public synchronized String bor(String user, String password, String filename) 
     throws java.rmi.RemoteException {
 
-        //Actualizamos el log.
+        // Verificamos que el usuario se encuentre autenticado
+        if (!verificarAutenticado(user, password)) {
+            return "- ERROR - Usted no se encuentra autenticado";
+        }
 
+        //Actualizamos el log.
         String infoComando = "Ejecuto el comando bor: \n\tBorrar" + filename+
                              " del servidor remoto siempre que sea el dueno";
         actualizarLog(user, infoComando);
@@ -249,6 +282,11 @@ public class      s_rmifs_Implementation
                              "ejecucion del cliente";
         actualizarLog(user, infoComando);
 
+        // Si el usuario estaba autenticado, lo quitamos de la lista.
+        if (!verificarAutenticado(user, password)) {
+            usuarios.remove(new Usuario(user,password));
+        }
+
     }
 
     /**
@@ -263,7 +301,12 @@ public class      s_rmifs_Implementation
         try {
             
             a_rmifs_Interface auth = (a_rmifs_Interface) Naming.lookup("rmi://"+servidorAuth+":"+puertoAuth+"/a_rmifs");            
-            return auth.autenticar(nombre,clave);
+            // Si la autenticacion fue exitosa, agregamos el usuario a la lista de autenticados.
+            if (auth.autenticar(nombre,clave)) {
+                usuarios.add(new Usuario(nombre,clave));
+                return true;
+            }
+            return false;
         
         // Manejo de excepciones.
         } catch (MalformedURLException murle) {
