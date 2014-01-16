@@ -46,7 +46,10 @@ public class c_rmifs {
      * @param args Arreglo de argumentos
      * @param listaFlags lista con los flags validos
      */
-    private static void verificarArg(int indice, int longitud, String[] args, ArrayList<String> listaFlags) {
+    private static void verificarArg(int indice, 
+                                     int longitud, 
+                                     String[] args, 
+                                     ArrayList<String> listaFlags) {
 
         if ((indice+1 == longitud) || listaFlags.contains(args[indice+1])) {
             System.out.println("- ERROR - Sintaxis: java c_rmifs [-f usuarios] -p puerto -m servidor [-c comandos]");
@@ -60,6 +63,8 @@ public class c_rmifs {
      * los inserta en una lista
      * @param archivoUsu el nombre del archivo a leer
      * @return retorna la lista con los usuarios del archivo
+     * @throws FileNotFoundException En caso de que no se encuentre el archivo
+     * @throws IOException En caso de error al leer el archivo
      */
     public static ArrayList<Usuario> cargarArchivoUsuarios(String archivoUsu) {
          
@@ -106,6 +111,7 @@ public class c_rmifs {
      * Funcion que solicita al usuario los datos para
      * autenticarse por pantalla
      * @return La lista con el usuario insertado por pantalla
+     * @throws IOException En caso de error al leer el archivo
      */
     public static ArrayList<Usuario> cargarUsuariosPorPantalla() {
 
@@ -143,6 +149,9 @@ public class c_rmifs {
      * @param usuarios Lista con los usuarios a autenticar
      * @param puerto El puerto para conectarse al servidor de autenticacion
      * @return Booleano que indica si se pudo autenticar.
+     * @throws MalformeURLException En caso de una URL mal formada
+     * @throws RemoteException En caso de que el objeto remoto no este disponible
+     * @throws NotBoundException En caso de que no se logre hacer el lookup
      */
     public static boolean autenticarCliente(ArrayList<Usuario> usuarios, int puerto) {
 
@@ -153,7 +162,8 @@ public class c_rmifs {
         
         try {
             
-            s_rmifs_Interface auth = (s_rmifs_Interface) Naming.lookup("rmi://"+servidor+":"+puerto+"/s_rmifs");            
+            s_rmifs_Interface auth = 
+                (s_rmifs_Interface) Naming.lookup("rmi://"+servidor+":"+puerto+"/s_rmifs");            
             
             for (Usuario usuActual : usuarios) {
 
@@ -198,7 +208,9 @@ public class c_rmifs {
      * Funcion que ejecuta los comandos en el archivo provisto por el
      * usuario
      * @param fs Es el objeto a utilizar para ejecutar los comandos
-     * @param filename Es el nombre del archivo donde estan los comandos1
+     * @param filename Es el nombre del archivo donde estan los comandos
+     * @throws FileNotFoundException Cuando no se encuentra el archivo
+     * @throws IOException Cuando hay un error al leer del archivo
      */
     public static void ejecutarComandosArchivo(s_rmifs_Interface fs, String filename) {
 
@@ -312,6 +324,7 @@ public class c_rmifs {
      * comandos de la consola y los pasa a ejecutarComando.
      * @param fs Es el objeto a utilizar para ejecutar los comandos
      * @param comandos Es el nombre del archivo donde estan los comandos
+     * @throws IOException Cuando ocurre un error al leer en pantalla
      */
 	public static void escucharCliente(s_rmifs_Interface fs, String comandos) {
 
@@ -372,6 +385,7 @@ public class c_rmifs {
      * @param nombre El nombre del usuario
      * @param clave La clave del usuario
      * @param fs La interfaz del servidor para acceder al servicio remoto
+     * @throws Exception En caso de que el objeto remoto no este disponible
      */
     public static void rls(String nombre, String clave, s_rmifs_Interface fs) {
 
@@ -392,6 +406,7 @@ public class c_rmifs {
      * @param clave La clave del usuario
      * @param argumento El nombre del archivo a subir
      * @param fs La interfaz del servidor para acceder al servicio remoto
+     * @throws Exception En caso de que el objeto remoto no este disponible
      */
     public static void sub(String nombre, String clave, String argumento, s_rmifs_Interface fs) {
 
@@ -424,6 +439,7 @@ public class c_rmifs {
      * @param clave La clave del usuario
      * @param argumento Nombre del archivo a bajar
      * @param fs La interfaz del servidor para acceder al servicio remoto
+     * @throws Exception Cuando el objeto remoto no esta disponible
      */
     public static void baj(String nombre, String clave, String argumento, s_rmifs_Interface fs) {
 
@@ -458,6 +474,7 @@ public class c_rmifs {
      * @param clave La clave del usuario
      * @param argumento Nombre del archivo a borrar
      * @param fs La interfaz del servidor para acceder al servicio remoto
+     * @throws Exception Cuando el objeto remoto no este disponible
      */
     public static void bor(String nombre, String clave, String argumento, s_rmifs_Interface fs) {
 
@@ -477,6 +494,7 @@ public class c_rmifs {
      * @param nombre El nombre del usuario
      * @param clave La clave del usuario
      * @param fs La interfaz del servidor para acceder al servicio remoto
+     * @throws Exception Cuando el objeto remoto no este disponible
      */
     public static void sal(String nombre, String clave, s_rmifs_Interface fs) {
 
@@ -581,6 +599,7 @@ public class c_rmifs {
      * un arreglo de bytes para transferir al servidor de archivos
      * @param nombreArchivo el nombre del archivo a comprobar
      * @return True si encuentra el archivo
+     * @throws Exception Al ocurrir un error en transformar el archivo a bytes
      */
     public static byte[] formatearArchivo(String nombreArchivo) {
         
@@ -609,6 +628,7 @@ public class c_rmifs {
      * @param buffer El arreglo de bytes del archivo
      * @param nombreArchivo El nombre del archivo a crear
      * @return Mensaje de exito o fracaso.
+     * @throws Exception Cuando ocurre un error al transformar los bytes
      */
 
     public static String construirArchivo(String nombreArchivo, byte[] buffer) {
@@ -631,6 +651,9 @@ public class c_rmifs {
      * @param puerto Es el puerto por donde contactar al servidor de archivos
      * @param comandos Es el nombre de archivos de comandos provisto por el usuario
      * @param hostname Es el hostname en donde se encuentra el servidor de archivos
+     * @throws MalformedURLException En caso de una URL mal formada
+     * @throws RemoteException Cuando el objeto remoto no este disponible
+     * @throws NotBoundException Cuando el lookup genere un error
      */
 	public static void servidorArchivos(int puerto, String comandos, String hostname) {
 

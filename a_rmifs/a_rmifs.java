@@ -43,7 +43,10 @@ public class a_rmifs {
      * @param args Arreglo de argumentos
      * @param listaFlags lista con los flags validos
      */
-    private static void verificarArg(int indice, int longitud, String[] args, ArrayList<String> listaFlags) {
+    private static void verificarArg(int indice, 
+                                     int longitud, 
+                                     String[] args, 
+                                     ArrayList<String> listaFlags) {
 
         if ((indice+1 == longitud) || listaFlags.contains(args[indice+1])) {
             System.out.println("- ERROR - Sintaxis: java a_rmifs -f usuarios -p puerto");

@@ -75,8 +75,10 @@ public class s_rmifs {
      * @param sFiles Es la lista de archivos disponibles en el servidor.
      * Para esta funcion, esta lista ya se encuentra verificada y contiene
      * un snapshot del ultimo estado del servidor de archivos.
-     * @param puertoEspecifico Es el puerto por donde se asociara
+     * @param puerto Es el puerto por donde se asociara
+     * @param fs Es la interfaz en donde se instanciara el objeto remoto
      * al objeto remoto.
+     * @throws Exception Cuando ocurre un error al hacer bind del objeto remoto
      */
     public s_rmifs(ArrayList<Archivo> sFiles, String puerto, s_rmifs_Interface fs) {
 
@@ -98,6 +100,7 @@ public class s_rmifs {
      * de todos los archivos de los usuarios, cada archivo con
      * su respectivo dueno.
      * @param file Es el archivo del cual se va a leer.
+     * @throws FileNotFoundException Cuando no se encuentra el archivo
      */
     public static void leerArchivo(File file) {
 
@@ -193,6 +196,7 @@ public class s_rmifs {
     /**
      * Metodo para escribir la lista de archivos y sus duenos al
      * archivo de registro
+     * @throws IOException Cuando ocurre un error al escribir el archivo
      */
     public static void escribirArchivoRegistro() {
         

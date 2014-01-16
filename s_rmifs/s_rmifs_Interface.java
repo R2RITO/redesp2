@@ -18,6 +18,7 @@ public interface s_rmifs_Interface extends java.rmi.Remote {
      * @param user Es el ID del usuario
      * @param password Es la clave del usuario user
      * @return Un string con la lista de archivos remotos
+     * @throws RemoteException Cuando el objeto remoto no esta disponible
      */
     public String rls(String user, String password) 
     throws java.rmi.RemoteException;
@@ -30,6 +31,7 @@ public interface s_rmifs_Interface extends java.rmi.Remote {
      * @param filename Es el nombre con el cual se va a guardar el archivo
      * @param data Es el contenido del archivo que se va a subir
      * @return Un string con un mensaje de exito o fracaso.
+     * @throws RemoteException Cuando el objeto remoto no esta disponible
      */
     public String sub(String user, String password, String filename, byte[] data) 
     throws java.rmi.RemoteException;
@@ -42,6 +44,7 @@ public interface s_rmifs_Interface extends java.rmi.Remote {
      * @param filename Es el nombre del archivo que se desea bajar
      * @return Un arreglo de bytes con el contenido del archivo.
      * Si ocurre un error, retorna null.
+     * @throws RemoteException Cuando el objeto remoto no esta disponible
      */
     public byte[] baj(String user, String password, String filename) 
     throws java.rmi.RemoteException;
@@ -53,6 +56,7 @@ public interface s_rmifs_Interface extends java.rmi.Remote {
      * @param password Es la clave del usuario user
      * @param filename Es el nombre del archivo que se desea borrar
      * @return Un string con un mensaje de exito o fracaso.
+     * @throws RemoteException Cuando el objeto remoto no esta disponible
      */
     public String bor(String user, String password, String filename) 
     throws java.rmi.RemoteException;
@@ -62,12 +66,14 @@ public interface s_rmifs_Interface extends java.rmi.Remote {
      * Funcion que avisa que un usuario dejo de usar el servidor
      * @param user Es el ID del usuario
      * @param password Es la clave del usuario user
+     * @throws RemoteException Cuando el objeto remoto no esta disponible
      */
     public void sal(String user, String password) 
     throws java.rmi.RemoteException;
 
     /**
      * Procedimiento que imprime la lista de logs.
+     * @throws RemoteException Cuando el objeto remoto no esta disponible
      */
     public String imprimirLog()
     throws java.rmi.RemoteException;
@@ -78,6 +84,7 @@ public interface s_rmifs_Interface extends java.rmi.Remote {
      * @param nombre El nombre del usuario
      * @param clave La clave del usuario
      * @return El resultado de la autenticacion, true si fue exitosa.
+     * @throws RemoteException Cuando el objeto remoto no esta disponible
      */
     public Boolean autenticar(String nombre, String clave)
     throws java.rmi.RemoteException;
